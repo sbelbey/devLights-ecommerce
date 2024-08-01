@@ -1,0 +1,20 @@
+export interface DBConfig {
+    mongo: {
+        uri: string | null;
+    };
+}
+
+export interface Config {
+    BACKPORT: string | undefined;
+    PORT: string | undefined;
+    MONGO_URI: string | undefined;
+    DATABASE: string | undefined;
+    DB_PASSWORD: string | undefined;
+    ADMIN_NAME: string | undefined;
+    ADMIN_PASSWORD: string | undefined;
+    DATA_SOURCE: string | undefined;
+    SECRET_KEY: string;
+    SESSION_KEY: string;
+    EMAIL: string | undefined;
+    EMAIL_PASSWORD: string | undefined;
+}
