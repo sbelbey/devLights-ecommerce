@@ -61,3 +61,4 @@ Para configurar este proyecto localmente, sigue estos pasos:
    ```
    npm run dev
    ```
+w

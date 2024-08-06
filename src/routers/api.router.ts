@@ -1,9 +1,24 @@
-import { Router } from "express";
+import { Router, Request, Response } from "express";
 
-const router = Router();
+class ApiRouter {
+    private router: Router;
 
-router.get("/", (req, res) => {
-    res.send("Hello World");
-});
+    constructor() {
+        this.router = Router();
+        this.initializeRoutes();
+    }
 
-export default router;
+    private initializeRoutes(): void {
+        this.router.get("/", this.helloWorld);
+    }
+
+    private helloWorld(req: Request, res: Response): void {
+        res.send("Hello World");
+    }
+
+    public getRouter(): Router {
+        return this.router;
+    }
+}
+
+export default ApiRouter;
