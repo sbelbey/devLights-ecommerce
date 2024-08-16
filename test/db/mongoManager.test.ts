@@ -2,8 +2,8 @@ import { expect } from "@jest/globals";
 import { describe, it, beforeEach, afterEach } from "@jest/globals";
 import sinon from "sinon";
 import mongoose from "mongoose";
-import MongoManager from "../../../src/models/db/mongoManager";
-import DB_CONFIG from "../../../src/config/db.config";
+import MongoManager from "../../src/db/mongoManager";
+import DB_CONFIG from "../../src/config/db.config";
 
 describe("MongoManager", () => {
     let connectStub: sinon.SinonStub;

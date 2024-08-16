@@ -1,6 +1,6 @@
 import { prop, getModelForClass, Ref } from "@typegoose/typegoose";
 import { UserRole } from "../../constants/UserRole.constants";
-import { Cart } from "./carts.models";
+import { Cart } from "../cart/model";
 
 export class User {
     @prop({ required: true })
@@ -17,6 +17,9 @@ export class User {
             "Please fill a valid email",
         ],
     })
+    email!: string;
+
+    @prop({ required: true })
     password!: string;
 
     @prop({
@@ -34,14 +37,22 @@ export class User {
     @prop({
         type: String,
         default: "",
+        required: false,
     })
     resetToken!: string;
 
     @prop({
         type: Number,
         default: 0,
+        required: false,
     })
     resetTokenExpires!: number;
+
+    @prop({ type: Date, default: Date.now })
+    createdAt!: Date;
+
+    @prop({ type: Date, default: Date.now })
+    updatedAt!: Date;
 }
 
 export const UserModel = getModelForClass(User);

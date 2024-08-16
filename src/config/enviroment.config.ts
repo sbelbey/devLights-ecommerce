@@ -16,6 +16,8 @@ const config: Config = {
     SESSION_KEY: process.env.SESSION_KEY || "",
     EMAIL: process.env.EMAIL || "",
     EMAIL_PASSWORD: process.env.EMAIL_PASSWORD || "",
+    TEST_DATABASE: process.env.TEST_DATABASE,
+    NODE_ENV: process.env.NODE_ENV || "dev",
 };
 
 export default config;

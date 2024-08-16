@@ -17,4 +17,6 @@ export interface Config {
     SESSION_KEY: string;
     EMAIL: string | undefined;
     EMAIL_PASSWORD: string | undefined;
+    TEST_DATABASE: string | undefined;
+    NODE_ENV: string | undefined;
 }

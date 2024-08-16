@@ -12,23 +12,26 @@ export class Product {
     @prop({ required: true })
     code!: string;
 
-    @prop({ required: true })
+    @prop({ required: true, min: 0, double: true })
     price!: number;
 
-    @prop({ required: true })
+    @prop({ required: true, min: 0, integer: true })
     stock!: number;
 
     @prop({ required: true })
     category!: string;
+
+    @prop({ required: true, default: true })
+    isNew!: boolean;
+
+    @prop({ required: true, default: true })
+    isAvailable!: boolean;
 
     @prop({ default: true })
     status!: boolean;
 
     @prop({ type: () => [String], default: [] })
     thumbnail!: string[];
-
-    @prop({ default: "admin" })
-    owner!: string;
 }
 
 export const ProductModel = getModelForClass(Product);

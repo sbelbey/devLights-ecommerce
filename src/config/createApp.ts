@@ -6,7 +6,7 @@
 import express from "express";
 import cluster from "cluster";
 import { cpus } from "os";
-import MongoManager from "../models/db/mongoManager";
+import MongoManager from "../db/mongoManager";
 
 /**
  * @class ExpressAppCreator
