@@ -1,14 +1,7 @@
-/**
- * @fileoverview This file contains the ProductsDAO class which provides methods to interact with the products collection in the database.
- * @author Saúl Belbey
- * @version 1.0.0
- */
 import { DocumentType } from "@typegoose/typegoose";
-import { Product, ProductModel } from "./model";
+import { Product } from "./model";
+import { ProductModel } from "../processingModels";
 
-/**
- * Class representing the Data Access Object (DAO) for products.
- */
 class ProductDAO {
     /**
      * Creates a new product in the database.

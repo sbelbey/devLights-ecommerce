@@ -4,7 +4,9 @@
  * @version 1.0.0
  */
 import { DocumentType } from "@typegoose/typegoose";
-import { User, UserModel } from "./model";
+import { User } from "./model";
+import { UserModel } from "../processingModels";
+
 /**
  * Class representing the Data Access Object (DAO) for users.
  */

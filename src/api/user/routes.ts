@@ -1,6 +1,6 @@
 import { Router } from "express";
 import schemaValidator from "../../middlewares/schemaValidators.middlewares";
-import { userCreatePayloadValidator } from "../../middlewares/validators/user.validator";
+import { userCreatePayloadValidator, userLoginValidator } from "./validator";
 import UserController from "./controller";
 import { idValidator } from "../../middlewares/validators/common.validator";
 
@@ -12,10 +12,12 @@ userRouter.post(
     UserController.createUser
 );
 
-userRouter.get(
-    "/:id",
-    schemaValidator(null, idValidator),
-    UserController.getUser
+userRouter.get("/", schemaValidator(null, idValidator), UserController.getUser);
+
+userRouter.post(
+    "/login",
+    schemaValidator(userLoginValidator, null),
+    UserController.login
 );
 
 export default userRouter;

@@ -1,4 +1,6 @@
-import { prop, getModelForClass } from "@typegoose/typegoose";
+import { prop, Ref } from "@typegoose/typegoose";
+import { User } from "../user/model";
+import { Category } from "../category/model";
 
 export const productCollection = "products";
 
@@ -18,8 +20,8 @@ export class Product {
     @prop({ required: true, min: 0, integer: true })
     stock!: number;
 
-    @prop({ required: true })
-    category!: string;
+    @prop({ ref: () => Category, required: true })
+    category!: Ref<Category>;
 
     @prop({ required: true, default: true })
     isNew!: boolean;
@@ -32,6 +34,15 @@ export class Product {
 
     @prop({ type: () => [String], default: [] })
     thumbnail!: string[];
-}
 
-export const ProductModel = getModelForClass(Product);
+    @prop({ type: Date, default: Date.now })
+    createdAt!: Date;
+
+    @prop({ type: Date, default: Date.now })
+    updatedAt!: Date;
+
+    @prop({
+        ref: () => User,
+    })
+    createdBy!: Ref<User>;
+}

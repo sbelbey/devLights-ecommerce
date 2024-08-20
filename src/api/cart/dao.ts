@@ -1,10 +1,6 @@
-/**
- * @fileoverview This file contains the CartDAO class which provides methods to interact with the carts collection in the database.
- * @author Sal Belbey
- * @version 1.0.0
- */
 import { DocumentType } from "@typegoose/typegoose";
-import { Cart, CartModel } from "./model";
+import { Cart } from "./model";
+import { CartModel } from "../processingModels";
 
 /*
  * Class representing the Data Access Objetc (DAO) for carst.

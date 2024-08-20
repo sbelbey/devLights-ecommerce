@@ -13,3 +13,8 @@ export interface UserResponse {
     email: string;
     role: string;
 }
+
+export interface UserLoginFields {
+    email: string;
+    password: string;
+}

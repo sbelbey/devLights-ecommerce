@@ -13,7 +13,7 @@ export interface Config {
     ADMIN_NAME: string | undefined;
     ADMIN_PASSWORD: string | undefined;
     DATA_SOURCE: string | undefined;
-    SECRET_KEY: string;
+    JWT_SECRET: string;
     SESSION_KEY: string;
     EMAIL: string | undefined;
     EMAIL_PASSWORD: string | undefined;

@@ -29,12 +29,6 @@ export class User {
     role!: UserRole;
 
     @prop({
-        type: () => [Cart],
-        ref: Cart,
-    })
-    cart!: Ref<Cart>[];
-
-    @prop({
         type: String,
         default: "",
         required: false,
@@ -48,11 +42,12 @@ export class User {
     })
     resetTokenExpires!: number;
 
+    @prop({ type: Boolean, default: true })
+    isActive!: boolean;
+
     @prop({ type: Date, default: Date.now })
     createdAt!: Date;
 
     @prop({ type: Date, default: Date.now })
     updatedAt!: Date;
 }
-
-export const UserModel = getModelForClass(User);
