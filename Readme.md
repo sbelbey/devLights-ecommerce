@@ -11,13 +11,13 @@ To set up this project locally, follow these steps:
 1. Clone the repository:
 
     ```
-    git clone https://github.com/your-username/lu-sa-ecommerce-backend.git
+    git clone https://github.com/sbelbey/devLights-ecommerce.git
     ```
 
 2. Navigate to the project directory:
 
     ```
-    cd lu-sa-ecommerce-backend
+    cd devLights-ecommerce
     ```
 
 3. Install dependencies:
@@ -45,13 +45,13 @@ Para configurar este proyecto localmente, sigue estos pasos:
 1. Clona el repositorio:
 
     ```
-    git clone https://github.com/tu-usuario/lu-sa-ecommerce-backend.git
+    git clone https://github.com/sbelbey/devLights-ecommerce.git
     ```
 
 2. Navega al directorio del proyecto:
 
     ```
-    cd lu-sa-ecommerce-backend
+    cd devLights-ecommerce
     ```
 
 3. Instala las dependencias:
