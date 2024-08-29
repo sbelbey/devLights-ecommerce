@@ -1,22 +1,31 @@
 import { Request, Response } from "express";
-import { ProductCreateFields, ProductResponse } from "./interface";
+import {
+    ProductCreateFields,
+    ProductFilteredResponse,
+    ProductResponse,
+} from "./interface";
 import ProductServices from "./service";
 import apiResponse from "../../utils/apiResponse.utils";
 import HTTP_STATUS from "../../constants/HttpStatus";
 import HttpError from "../../utils/HttpError.utils";
+import { ProductSearchParamsQuery } from "./types";
 
 export default class ProductController {
     static async getProduct(req: Request, res: Response): Promise<Response> {
         try {
-            //FIXME: Falta agregar - Añadir Paginado - Añadir Filtro - Añadir Búsqueda - Añadir Ordenamiento
-            const productId: string | undefined = req.query.id as string;
+            const productSearchParams: ProductSearchParamsQuery = req.query;
 
-            let productFound: ProductResponse | ProductResponse[] | null = null;
+            let productFound: ProductResponse | ProductFilteredResponse | null =
+                null;
 
-            if (productId) {
-                productFound = await ProductServices.findByProductId(productId);
+            if (productSearchParams.productId) {
+                productFound = await ProductServices.findByProductId(
+                    productSearchParams.productId
+                );
             } else {
-                productFound = await ProductServices.findProducts();
+                productFound = await ProductServices.findProducts(
+                    productSearchParams
+                );
             }
 
             const response = apiResponse(true, productFound);
@@ -40,7 +49,6 @@ export default class ProductController {
     static async createProduct(req: Request, res: Response): Promise<Response> {
         try {
             const productPayload: ProductCreateFields = req.body;
-
             const productCreated: ProductResponse =
                 await ProductServices.createProduct(productPayload, req);
 

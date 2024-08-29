@@ -1,36 +1,17 @@
-import { prop, getModelForClass, Ref } from "@typegoose/typegoose";
+import { create } from "domain";
+import { model, Schema } from "mongoose";
 
-export const categoryCollection = "category";
+const categoryCollection = "Category";
 
-class SubCategory {
-    @prop({ required: true })
-    name!: string;
+const CategorySchema = new Schema({
+    name: { type: String, required: true },
+    description: { type: String, required: true },
+    status: { type: Boolean, default: true },
+    createdAt: { type: Date, required: true, default: Date.now },
+    updatedAt: { type: Date, required: true, default: Date.now },
+    createdBy: { type: Schema.Types.ObjectId, ref: "User", required: true },
+});
 
-    @prop({ required: true })
-    description!: string;
-}
+const CategoryModel = model(categoryCollection, CategorySchema);
 
-export class Category {
-    @prop({ required: true, unique: true })
-    name!: string;
-
-    @prop({ required: true })
-    description!: string;
-
-    @prop({ required: true, default: true })
-    status!: boolean;
-
-    @prop({ type: () => [SubCategory], ref: () => SubCategory, default: [] })
-    subCategory!: Ref<SubCategory>[];
-
-    @prop({ type: Date, default: Date.now })
-    createdAt!: Date;
-
-    @prop({ type: Date, default: Date.now })
-    updatedAt!: Date;
-
-    @prop({
-        ref: () => "User",
-    })
-    createdBy!: Ref<"User">;
-}
+export default CategoryModel;

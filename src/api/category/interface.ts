@@ -1,8 +1,20 @@
+import { Schema } from "mongoose";
+import { IUser } from "../user/interface";
+
+export interface ICategory {
+    _id: Schema.Types.ObjectId;
+    name: string;
+    description: string;
+    status: boolean;
+    createdAt: Date;
+    updatedAt: Date;
+    createdBy: IUser | string;
+}
+
 export interface CategoryCreateFields {
     name: string;
     description: string;
     status: boolean;
-    subCategory?: string[];
 }
 
 export interface CategoryResponse {
@@ -10,7 +22,7 @@ export interface CategoryResponse {
     name: string;
     description: string;
     status: boolean;
-    subCategory: string[];
+
     createdAt: Date;
     updatedAt: Date;
 }

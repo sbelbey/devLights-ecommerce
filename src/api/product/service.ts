@@ -1,21 +1,25 @@
-import { DocumentType } from "@typegoose/typegoose";
 import { Request } from "express";
 import ProductDto from "./dto";
 import HTTP_STATUS from "../../constants/HttpStatus";
 import HttpError from "../../utils/HttpError.utils";
 import ProductDAO from "./dao";
-import { ProductCreateFields, ProductResponse } from "./interface";
-import { Product } from "./model";
+import {
+    IProduct,
+    ProductCreateFields,
+    ProductFilteredResponse,
+    ProductResponse,
+} from "./interface";
 import ProductRepository from "./repository";
 import AuditData from "../../utils/AuditData.utils";
-import { ProductModel } from "../processingModels";
 import CategoryDAO from "../category/dao";
+import { ProductSearchParamsQuery } from "./types";
 
 export default class ProductServices {
     static async findByProductId(productId: string): Promise<ProductResponse> {
         try {
-            const producFound: DocumentType<Product> | null =
-                await ProductDAO.getById(productId);
+            const producFound: IProduct | null = await ProductDAO.getById(
+                productId
+            );
 
             if (!producFound) {
                 throw new HttpError(
@@ -39,23 +43,69 @@ export default class ProductServices {
         }
     }
 
-    static async findProducts(): Promise<ProductResponse[]> {
+    static async findProducts(
+        productSearchParams: ProductSearchParamsQuery
+    ): Promise<ProductFilteredResponse> {
         try {
-            const productFound: DocumentType<Product>[] =
-                await ProductDAO.getAll();
+            const {
+                category,
+                salersId,
+                priceRange,
+                filterByPrice,
+                page,
+                limit,
+            } = productSearchParams;
 
-            if (productFound.length) {
+            let priceStart: number | undefined;
+            let priceEnd: number | undefined;
+            let sort: -1 | 1 | undefined;
+
+            if (filterByPrice) {
+                sort = filterByPrice === "asc" ? 1 : -1;
+            }
+
+            if (priceRange) {
+                const [start, end] = priceRange.split(",");
+                priceStart = Number(start);
+                priceEnd = Number(end);
+            }
+
+            const productFound = await ProductDAO.getAll(
+                category,
+                salersId,
+                priceStart,
+                priceEnd,
+                sort,
+                page,
+                limit
+            );
+
+            if (!productFound.docs.length) {
                 throw new HttpError(
-                    "Product not found",
-                    "PRODUCT_NOT_FOUND",
+                    "Products not found",
+                    "PRODUCTS_NOT_FOUND",
                     HTTP_STATUS.NOT_FOUND
                 );
             }
 
-            const products: ProductResponse[] =
-                ProductDto.multipleProducts(productFound);
+            const products: ProductResponse[] = ProductDto.multipleProducts(
+                productFound.docs
+            );
 
-            return products;
+            const productsFiltered: ProductFilteredResponse = {
+                products,
+                totalDocs: productFound.totalDocs,
+                limit: productFound.limit,
+                totalPages: productFound.totalPages,
+                page: productFound.page,
+                pagingCounter: productFound.pagingCounter,
+                hasPrevPage: productFound.hasPrevPage,
+                hasNextPage: productFound.hasNextPage,
+                prevPage: productFound.prevPage,
+                nextPage: productFound.nextPage,
+            };
+
+            return productsFiltered;
         } catch (err: any) {
             const error: HttpError = new HttpError(
                 err.description || err.message,
@@ -96,20 +146,16 @@ export default class ProductServices {
                 );
             }
 
-            const productWithAuditData = AuditData.addCreateData(
-                req,
-                productPayload
-            );
+            const productWithAuditData: Partial<IProduct> =
+                AuditData.addCreateData(req, productPayload);
 
-            const productToCreatePayload: Product = new ProductModel(
+            const productCreated = await ProductDAO.create(
                 productWithAuditData
             );
 
-            const productCreated: DocumentType<Product> =
-                await ProductDAO.create(productToCreatePayload);
-
-            const productCreatedResponse: ProductResponse =
-                ProductDto.single(productCreated);
+            const productCreatedResponse: ProductResponse = ProductDto.single(
+                productCreated as unknown as IProduct
+            );
 
             return productCreatedResponse;
         } catch (err: any) {

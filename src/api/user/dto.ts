@@ -1,15 +1,16 @@
-import { DocumentType } from "@typegoose/typegoose";
-import { User } from "./model";
-import { UserResponse } from "./interfaces";
+import { IUser, UserResponse } from "./interface";
 
+/**
+ * Utility class for converting `IUser` objects to `UserResponse` objects.
+ */
 export default class UserDto {
     /**
-     * Converts an array of `User` documents to an array of `UserResponse` objects.
+     * Converts an array of `IUser` objects to an array of `UserResponse` objects.
      *
-     * @param users - An array of `DocumentType<User>` objects representing the users to be converted.
-     * @returns An array of `UserResponse` objects, each containing the `id`, `firstName`, `lastName`, `email`, and `role` properties of the corresponding `User` document.
+     * @param users - An array of `IUser` objects to be converted.
+     * @returns An array of `UserResponse` objects representing the input `IUser` objects.
      */
-    static usersArrayDTO(users: DocumentType<User>[]): UserResponse[] {
+    static usersArrayDTO(users: IUser[]): UserResponse[] {
         return users.map((user) => {
             return {
                 id: user._id.toString(),
@@ -22,14 +23,14 @@ export default class UserDto {
     }
 
     /**
-     * Converts a single `User` document to a `UserResponse` object.
+     * Converts an `IUser` object to a `UserResponse` object.
      *
-     * @param user - A `DocumentType<User>` object representing the user to be converted.
-     * @returns A `UserResponse` object containing the `id`, `firstName`, `lastName`, `email`, and `role` properties of the corresponding `User` document.
+     * @param user - The `IUser` object to be converted.
+     * @returns A `UserResponse` object representing the input `IUser` object.
      */
-    static userDTO(user: DocumentType<User>): UserResponse {
+    static userDTO(user: IUser): UserResponse {
         return {
-            id: user._id.toString(),
+            id: user._id?.toString(),
             firstName: user.firstName,
             lastName: user.lastName,
             email: user.email,

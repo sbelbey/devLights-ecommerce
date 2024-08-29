@@ -1,4 +1,4 @@
-import { CategoryModel } from "../processingModels";
+import CategoryModel from "./model";
 
 export default class CategoryRepository {
     static async findByName(name: string) {

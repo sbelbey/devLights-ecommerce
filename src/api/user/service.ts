@@ -1,22 +1,27 @@
-import { create } from "domain";
 import HTTP_STATUS from "../../constants/HttpStatus";
 import HttpError from "../../utils/HttpError.utils";
 import UserDao from "./dao";
-import { UserCreateFields, UserLoginFields, UserResponse } from "./interfaces";
-import { User } from "./model";
+import {
+    IUser,
+    UserCreateFields,
+    UserLoginFields,
+    UserResponse,
+} from "./interface";
 import UserRepository from "./reposity";
 import { BcryptUtils } from "../../utils/bcrypt.utils";
-import { DocumentType } from "@typegoose/typegoose";
 import UserDto from "./dto";
-import { UserModel } from "../processingModels";
 
+/**
+ * Provides user-related services, including creating users, retrieving user information, and user authentication.
+ */
 export default class UserService {
     /**
      * Creates a new user in the system.
      *
      * @param user - The user creation fields, including email, password, and any other required fields.
-     * @returns A Promise that resolves to the created user document.
-     * @throws {HttpError} If a user with the provided email already exists, or an error occurs while creating the user.
+     * @returns A promise that resolves to the created user's response data.
+     * @throws {HttpError} If a user with the provided email already exists.
+     * @throws {HttpError} If there is an error creating the user.
      */
     static async createUser(user: UserCreateFields): Promise<UserResponse> {
         try {
@@ -30,15 +35,17 @@ export default class UserService {
                 );
             }
 
-            const userPayload = new UserModel({
+            const userPayload = {
                 ...user,
                 password: BcryptUtils.createHash(user.password),
                 createdAt: new Date(),
-            });
+            };
 
             const userCreated = await UserDao.create(userPayload);
 
-            const userCleaned = UserDto.userDTO(userCreated);
+            const userCleaned = UserDto.userDTO(
+                userCreated as unknown as IUser
+            );
             return userCleaned;
         } catch (err: any) {
             const error: HttpError = new HttpError(
@@ -55,14 +62,13 @@ export default class UserService {
      * Retrieves a user by their unique identifier.
      *
      * @param userId - The unique identifier of the user to retrieve.
-     * @returns A Promise that resolves to a `UserResponse` object representing the retrieved user.
-     * @throws {HttpError} If the user is not found, or an error occurs while retrieving the user.
+     * @returns A promise that resolves to the user's response data.
+     * @throws {HttpError} If the user is not found.
+     * @throws {HttpError} If there is an error retrieving the user.
      */
     static async getUserById(userId: string): Promise<UserResponse> {
         try {
-            const userFound: DocumentType<User> | null = await UserDao.getById(
-                userId
-            );
+            const userFound: IUser | null = await UserDao.getById(userId);
 
             if (!userFound) {
                 throw new HttpError(
@@ -89,12 +95,13 @@ export default class UserService {
     /**
      * Retrieves all users from the database.
      *
-     * @returns A Promise that resolves to an array of `UserResponse` objects, representing all the users found in the database.
-     * @throws {HttpError} If no users are found, or an error occurs while retrieving the users.
+     * @returns A promise that resolves to an array of user response data.
+     * @throws {HttpError} If no users are found.
+     * @throws {HttpError} If there is an error retrieving the users.
      */
     static async getAllUsers(): Promise<UserResponse[]> {
         try {
-            const usersFound: DocumentType<User>[] = await UserDao.getAll();
+            const usersFound: IUser[] = await UserDao.getAll();
 
             if (!usersFound || !usersFound.length) {
                 throw new HttpError(
@@ -119,18 +126,20 @@ export default class UserService {
     }
 
     /**
-     * Attempts to log in a user with the provided email and password.
+     * Authenticates a user by their email and password.
      *
-     * @param userLoginPayload - An object containing the email and password of the user attempting to log in.
-     * @returns A `UserResponse` object containing the user's information if the login is successful.
-     * @throws {HttpError} If the user is not found or the password is invalid.
+     * @param userLoginPayload - The user's email and password for login.
+     * @returns A promise that resolves to the authenticated user's response data.
+     * @throws {HttpError} If the user's credentials are invalid.
+     * @throws {HttpError} If there is an error retrieving the user.
      */
     static async login(
         userLoginPayload: UserLoginFields
     ): Promise<UserResponse> {
         try {
-            const userFound: DocumentType<User> | null =
-                await UserRepository.findUserByEmail(userLoginPayload.email);
+            const userFound = await UserRepository.findUserByEmail(
+                userLoginPayload.email
+            );
 
             if (!userFound) {
                 throw new HttpError(
@@ -141,7 +150,7 @@ export default class UserService {
             }
 
             const isValidPassword = BcryptUtils.isValidPassword(
-                userFound,
+                userFound as unknown as IUser,
                 userLoginPayload.password
             );
 
@@ -153,7 +162,9 @@ export default class UserService {
                 );
             }
 
-            const user: UserResponse = UserDto.userDTO(userFound);
+            const user: UserResponse = UserDto.userDTO(
+                userFound as unknown as IUser
+            );
 
             return user;
         } catch (err: any) {

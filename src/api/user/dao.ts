@@ -1,63 +1,54 @@
-/**
- * @fileoverview This file contains the UserDao class which provides methods to interact with the users collection in the database.
- * @author Saúl Belbey
- * @version 1.0.0
- */
-import { DocumentType } from "@typegoose/typegoose";
-import { User } from "./model";
-import { UserModel } from "../processingModels";
+import { IUser } from "./interface";
+import UserModel from "./model";
 
 /**
- * Class representing the Data Access Object (DAO) for users.
+ * Provides data access operations for managing users.
  */
 class UserDao {
     /**
      * Creates a new user in the database.
-     * @param {User} user - The user object to be created.
-     * @returns {Promise<DocumentType<User>>} A Promise that resolves to the created User.
+     * @param user - The partial user object to create.
+     * @returns The created user object.
      */
-    static async create(user: User): Promise<DocumentType<User>> {
+    static async create(user: Partial<IUser>) {
         return await UserModel.create(user);
     }
 
     /**
      * Retrieves all users from the database.
-     * @returns {Promise<DocumentType<User>[]>} A Promise that resolves to an array of Users.
+     * @returns A Promise that resolves to an array of `IUser` objects representing all users.
      */
-    static async getAll(): Promise<DocumentType<User>[]> {
+    static async getAll(): Promise<IUser[]> {
         return await UserModel.find();
     }
 
     /**
-     * Retrieves a user by their ID from the database.
-     * @param {string} id - The ID of the user to retrieve.
-     * @returns {Promise<DocumentType<User> | null>} A Promise that resolves to the found User or null if not found.
+     * Retrieves a user from the database by their unique identifier.
+     * @param id - The unique identifier of the user to retrieve.
+     * @returns A Promise that resolves to the user object if found, or `null` if not found.
      */
-    static async getById(id: string): Promise<DocumentType<User> | null> {
+    static async getById(id: string): Promise<IUser | null> {
         return await UserModel.findById(id);
     }
 
     /**
-     * Updates a user in the database.
-     * @param {string} id - The ID of the user to update.
-     * @param {User} user - The updated user object.
-     * @returns {Promise<DocumentType<User> | null>} A Promise that resolves to the updated User or null if not found.
+     * Updates an existing user in the database.
+     * @param id - The unique identifier of the user to update.
+     * @param user - The updated user object.
+     * @returns A Promise that resolves to the updated user object if found, or `null` if not found.
      */
-    static async update(
-        id: string,
-        user: User
-    ): Promise<DocumentType<User> | null> {
+    static async update(id: string, user: IUser): Promise<IUser | null> {
         return await UserModel.findByIdAndUpdate(id, user, {
             new: true,
         });
     }
 
     /**
-     * Deletes a user from the database.
-     * @param {string} id - The ID of the user to delete.
-     * @returns {Promise<DocumentType<User> | null>} A Promise that resolves to the deleted User or null if not found.
+     * Deletes a user from the database by their unique identifier.
+     * @param id - The unique identifier of the user to delete.
+     * @returns A Promise that resolves to the deleted user object if found, or `null` if not found.
      */
-    static async delete(id: string): Promise<DocumentType<User> | null> {
+    static async delete(id: string): Promise<IUser | null> {
         return await UserModel.findByIdAndDelete(id);
     }
 }

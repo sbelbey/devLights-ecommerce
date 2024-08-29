@@ -8,15 +8,7 @@ import apiResponse from "../utils/apiResponse.utils";
 
 const { JWT_SECRET, SESSION_KEY } = config;
 
-/**
- * Middleware function that checks the user's role and grants access to the requested resource if the user has the required role.
- *
- * @param {UserRole[]} requiredRoles - An array of user roles that are allowed to access the resource.
- * @returns {(req: Request, res: Response, next: NextFunction) => void} - A middleware function that can be used in an Express application.
- */
-const checkUserRole = (
-    requiredRoles: UserRole[]
-): ((req: Request, res: Response, next: NextFunction) => void) => {
+const checkUserRole = (requiredRoles: UserRole[]) => {
     return (req: Request, res: Response, next: NextFunction) => {
         let token = null;
         if (req && req.cookies) {
@@ -35,7 +27,7 @@ const checkUserRole = (
             const userRole: UserRole = decodedToken.role;
 
             if (requiredRoles.includes(userRole)) {
-                req.user = decodedToken._id;
+                req.body.user = decodedToken.id;
                 return next();
             }
 

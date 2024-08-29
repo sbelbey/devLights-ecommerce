@@ -1,32 +1,26 @@
-import { DocumentType } from "@typegoose/typegoose";
+import { Document } from "mongoose";
 import { CategoryResponse } from "./interface";
-import { Category } from "./model";
+import { ICategory } from "./interface";
 
 export default class CategoryDto {
-    static single(category: DocumentType<Category>): CategoryResponse {
+    static single(category: ICategory): CategoryResponse {
         return {
             id: category._id.toString(),
             name: category.name,
             description: category.description,
             status: category.status,
-            subCategory: category.subCategory.map((subCategory) =>
-                subCategory.toString()
-            ),
             createdAt: category.createdAt,
             updatedAt: category.updatedAt,
         };
     }
 
-    static multiple(categories: DocumentType<Category>[]): CategoryResponse[] {
+    static multiple(categories: ICategory[]): CategoryResponse[] {
         return categories.map((category) => {
             return {
                 id: category._id.toString(),
                 name: category.name,
                 description: category.description,
                 status: category.status,
-                subCategory: category.subCategory.map((subCategory) =>
-                    subCategory.toString()
-                ),
                 createdAt: category.createdAt,
                 updatedAt: category.updatedAt,
             };

@@ -1,9 +1,8 @@
-import { DocumentType } from "@typegoose/typegoose";
-import { ProductResponse } from "./interface";
-import { Product } from "./model";
+import { ICategory } from "../category/interface";
+import { IProduct, ProductResponse } from "./interface";
 
 export default class ProductDto {
-    static single(productFound: DocumentType<Product>): ProductResponse {
+    static single(productFound: IProduct): ProductResponse {
         return {
             id: productFound._id.toString(),
             title: productFound.title,
@@ -11,7 +10,7 @@ export default class ProductDto {
             code: productFound.code,
             price: productFound.price,
             stock: productFound.stock,
-            category: productFound.category,
+            category: productFound.category as ICategory,
             isNew: productFound.isNew,
             isAvailable: productFound.isAvailable,
             status: productFound.status,
@@ -20,10 +19,8 @@ export default class ProductDto {
         };
     }
 
-    static multipleProducts(
-        productsFound: DocumentType<Product>[]
-    ): ProductResponse[] {
-        return productsFound.map((product: DocumentType<Product>) => {
+    static multipleProducts(productsFound: any): ProductResponse[] {
+        return productsFound.map((product: any) => {
             return {
                 id: product._id.toString(),
                 title: product.title,
@@ -31,12 +28,12 @@ export default class ProductDto {
                 code: product.code,
                 price: product.price,
                 stock: product.stock,
-                category: product.category,
+                category: product.category as ICategory,
                 isNew: product.isNew,
                 isAvailable: product.isAvailable,
                 status: product.status,
                 thumbnail: product.thumbnail,
-                createdBy: product.createdBy.toString(),
+                createdBy: product.createdBy?.toString() ?? "",
             };
         });
     }

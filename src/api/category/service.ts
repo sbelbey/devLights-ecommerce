@@ -1,14 +1,14 @@
 import { Request } from "express";
-import { DocumentType } from "@typegoose/typegoose";
+import { Document } from "mongoose";
 import HTTP_STATUS from "../../constants/HttpStatus";
 import AuditData from "../../utils/AuditData.utils";
 import HttpError from "../../utils/HttpError.utils";
 import { CategoryCreateFields, CategoryResponse } from "./interface";
 import CategoryRepository from "./repository";
-import { CategoryModel } from "../processingModels";
-import { Category } from "./model";
+import { ICategory } from "./interface";
 import CategoryDAO from "./dao";
 import CategoryDto from "./dto";
+import CategoryModel from "./model";
 
 export default class CategoryService {
     static async createCategory(
@@ -28,22 +28,17 @@ export default class CategoryService {
                 );
             }
 
-            const categoryWithAuditData = AuditData.addCreateData(
-                req,
-                category
-            );
+            const categoryWithAuditData: Partial<ICategory> =
+                AuditData.addCreateData(req, category);
 
-            const categoryPayload: Category = new CategoryModel(
+            const categoryCreated = await CategoryDAO.create(
                 categoryWithAuditData
             );
 
-            const categoryCreated: DocumentType<Category> =
-                await CategoryDAO.create(categoryPayload);
+            // const categoryCleaned: CategoryResponse =
+            //     CategoryDto.single(categoryCreated);
 
-            const categoryCleaned: CategoryResponse =
-                CategoryDto.single(categoryCreated);
-
-            return categoryCleaned;
+            return categoryCreated as unknown as CategoryResponse;
         } catch (err: any) {
             const error: HttpError = new HttpError(
                 err.description || err.message,
@@ -57,8 +52,9 @@ export default class CategoryService {
 
     static async getCategory(categoryId: string): Promise<CategoryResponse> {
         try {
-            const categoryFound: DocumentType<Category> | null =
-                await CategoryDAO.getById(categoryId);
+            const categoryFound: ICategory | null = await CategoryDAO.getById(
+                categoryId
+            );
 
             if (!categoryFound) {
                 throw new HttpError(
@@ -83,8 +79,7 @@ export default class CategoryService {
 
     static async getCategories(): Promise<CategoryResponse[]> {
         try {
-            const categoriesFound: DocumentType<Category>[] =
-                await CategoryDAO.getAll();
+            const categoriesFound: ICategory[] = await CategoryDAO.getAll();
 
             if (!categoriesFound || !categoriesFound.length) {
                 throw new HttpError(

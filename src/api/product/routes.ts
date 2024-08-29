@@ -10,13 +10,13 @@ const productRouter = Router();
 
 productRouter.get(
     "/",
-    checkUserRole([UserRole.ADMIN, UserRole.SALER]),
     schemaValidator(null, idValidator),
     ProductController.getProduct
 );
 
 productRouter.post(
     "/",
+    checkUserRole([UserRole.ADMIN, UserRole.SALER]),
     schemaValidator(productCreatePayloadValidator, null),
     ProductController.createProduct
 );

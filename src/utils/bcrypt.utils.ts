@@ -1,12 +1,12 @@
 import bcrypt from "bcrypt";
-import { User } from "../api/user/model";
+import { IUser } from "../api/user/interface";
 
 export class BcryptUtils {
     static createHash(password: string) {
         return bcrypt.hashSync(password, bcrypt.genSaltSync(10));
     }
 
-    static isValidPassword(user: User, password: string) {
+    static isValidPassword(user: IUser, password: string) {
         return bcrypt.compareSync(password, user.password);
     }
 }

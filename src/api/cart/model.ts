@@ -1,28 +1,31 @@
-import { prop, getModelForClass, Ref } from "@typegoose/typegoose";
-import { Product } from "../product/model";
-import { User } from "../user/model";
+import { model, Schema } from "mongoose";
 
-class CartItem {
-    @prop({ ref: () => Product, required: true })
-    product!: Ref<Product>;
+const cartCollection = "Cart";
 
-    @prop({ type: Number, default: 1 })
-    quantity!: number;
-}
+const CartSchema = new Schema({
+    products: [
+        {
+            product: {
+                type: Schema.Types.ObjectId,
+                ref: "Product",
+                required: true,
+            },
+            quantity: {
+                type: Number,
+                required: true,
+            },
+        },
+    ],
+    createdAt: { type: Date, required: true },
+    updatedAt: { type: Date, required: true },
+    deletedAt: { type: Date, required: true },
+    owner: {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+        required: true,
+    },
+});
 
-export class Cart {
-    @prop({ type: () => [CartItem], default: [] })
-    products!: CartItem[];
+const CartModel = model(cartCollection, CartSchema);
 
-    @prop({ type: Date, default: Date.now })
-    createdAt!: Date;
-
-    @prop({ type: Date, default: Date.now })
-    updatedAt!: Date;
-
-    @prop({ type: Date, default: Date.now })
-    deletedAt!: Date;
-
-    @prop({ ref: () => User, required: true })
-    owner!: Ref<User>;
-}
+export default CartModel;

@@ -4,8 +4,15 @@ export const productCreatePayloadValidator = z.object({
     title: z.string().min(3, { message: "Title is required" }),
     description: z.string().min(3, { message: "Description is required" }),
     code: z.string().min(3, { message: "Code is required" }),
-    price: z.number().min(0, { message: "Price must be greater than 0" }),
-    stock: z.number().min(0, { message: "Quantity must be greater than 0" }),
+    price: z
+        .number()
+        .refine((val) => Number.isFinite(val) && !Number.isInteger(val), {
+            message: "Price must be a double",
+        }),
+    stock: z
+        .number()
+        .int({ message: "Stock must be an integer" })
+        .min(0, { message: "Quantity must be greater than or equal to 0" }),
     category: z.string().refine((value) => /^[0-9a-fA-F]{24}$/.test(value), {
         message: "It must be a valid ID",
     }),

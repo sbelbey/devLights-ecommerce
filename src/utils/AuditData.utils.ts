@@ -10,14 +10,13 @@ export default class AuditData {
      * @return {T & { createdAt: Date; createdBy: string | undefined }} - The payload with creation data.
      */
     static addCreateData<T>(
-        req: Request,
+        req: Partial<Request>,
         payload: T
     ): T & { createdAt: Date; createdBy: string | undefined } {
         let createdBy: string | undefined;
-        if (req.user && typeof req.user === "string") {
-            createdBy = new mongoose.Types.ObjectId(req.user).toString();
+        if (req.body.user && typeof req.body.user === "string") {
+            createdBy = new mongoose.Types.ObjectId(req.body.user).toString();
         }
-
         return {
             ...payload,
             createdAt: new Date(),
@@ -37,8 +36,8 @@ export default class AuditData {
         payload: T
     ): T & { updatedAt: Date; updatedBy: string | undefined } {
         let updatedBy: string | undefined;
-        if (req.user && typeof req.user === "string") {
-            updatedBy = new mongoose.Types.ObjectId(req.user).toString();
+        if (req.body.user && typeof req.body.user === "string") {
+            updatedBy = new mongoose.Types.ObjectId(req.body.user).toString();
         }
 
         return {

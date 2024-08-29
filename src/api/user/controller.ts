@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import HttpError from "../../utils/HttpError.utils";
 import HTTP_STATUS from "../../constants/HttpStatus";
-import { UserCreateFields, UserLoginFields, UserResponse } from "./interfaces";
+import { UserCreateFields, UserLoginFields, UserResponse } from "./interface";
 import UserService from "./service";
 import apiResponse from "../../utils/apiResponse.utils";
 import SessionUtils from "../../utils/Session.utils";
@@ -9,13 +9,16 @@ import config from "../../config/enviroment.config";
 
 const { SESSION_KEY } = config;
 
+/**
+ * Provides functionality for managing user-related operations in the application.
+ */
 export default class UserController {
     /**
-     * Creates a new user with the provided user data.
+     * Creates a new user in the system.
      *
-     * @param req - The Express request object, containing the user data in the `body` property.
-     * @param res - The Express response object, which will be used to send the API response.
-     * @returns A Promise that resolves to the API response, containing the created user.
+     * @param req - The Express request object containing the user data in the request body.
+     * @param res - The Express response object to send the API response.
+     * @returns A Promise that resolves to the API response with the created user data.
      */
     static async createUser(req: Request, res: Response): Promise<Response> {
         try {
@@ -42,11 +45,11 @@ export default class UserController {
     }
 
     /**
-     * Retrieves a user by their ID, or returns all users if no ID is provided.
+     * Retrieves a user or a list of users from the system.
      *
-     * @param req - The Express request object, containing the user ID in the `params` property.
-     * @param res - The Express response object, which will be used to send the API response.
-     * @returns A Promise that resolves to the API response, containing the requested user(s).
+     * @param req - The Express request object containing the user ID in the query parameters.
+     * @param res - The Express response object to send the API response.
+     * @returns A Promise that resolves to the API response with the requested user data.
      */
     static async getUser(req: Request, res: Response): Promise<Response> {
         try {
@@ -78,11 +81,11 @@ export default class UserController {
     }
 
     /**
-     * Logs in a user and generates an access token.
+     * Handles the login process for a user.
      *
-     * @param req - The Express request object, containing the user login fields in the `body` property.
-     * @param res - The Express response object, which will be used to send the API response and set the access token cookie.
-     * @returns A Promise that resolves to the API response, containing the logged-in user.
+     * @param req - The Express request object containing the user login payload in the request body.
+     * @param res - The Express response object to send the API response.
+     * @returns A Promise that resolves to the API response with the authenticated user data and an access token.
      */
     static async login(req: Request, res: Response): Promise<Response> {
         try {

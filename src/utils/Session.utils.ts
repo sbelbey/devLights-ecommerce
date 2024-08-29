@@ -1,6 +1,6 @@
 import { sign } from "jsonwebtoken";
 import config from "../config/enviroment.config";
-import { UserResponse } from "../api/user/interfaces";
+import { UserResponse } from "../api/user/interface";
 
 const { JWT_SECRET } = config;
 
