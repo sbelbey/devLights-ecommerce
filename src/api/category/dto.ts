@@ -1,4 +1,4 @@
-import { Document } from "mongoose";
+// INTERFACES
 import { CategoryResponse } from "./interface";
 import { ICategory } from "./interface";
 

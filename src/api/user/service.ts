@@ -1,28 +1,28 @@
-import HTTP_STATUS from "../../constants/HttpStatus";
-import HttpError from "../../utils/HttpError.utils";
-import UserDao from "./dao";
+// INTERFACES
+import { ICart } from "../cart/interface";
 import {
     IUser,
     UserCreateFields,
     UserLoginFields,
     UserResponse,
 } from "./interface";
+// MODELS
+import UserModel from "./model";
+// DAOS
+import UserDao from "./dao";
+// REPOSITORIES
 import UserRepository from "./reposity";
+// SERVICES
+import { CartService } from "../cart/service";
+// UTILS
+import HttpError from "../../utils/HttpError.utils";
 import { BcryptUtils } from "../../utils/bcrypt.utils";
+// DTOS
 import UserDto from "./dto";
+// CONSTANTS
+import HTTP_STATUS from "../../constants/HttpStatus";
 
-/**
- * Provides user-related services, including creating users, retrieving user information, and user authentication.
- */
 export default class UserService {
-    /**
-     * Creates a new user in the system.
-     *
-     * @param user - The user creation fields, including email, password, and any other required fields.
-     * @returns A promise that resolves to the created user's response data.
-     * @throws {HttpError} If a user with the provided email already exists.
-     * @throws {HttpError} If there is an error creating the user.
-     */
     static async createUser(user: UserCreateFields): Promise<UserResponse> {
         try {
             const userFound = await UserRepository.findUserByEmail(user.email);
@@ -34,18 +34,34 @@ export default class UserService {
                     HTTP_STATUS.CONFLICT
                 );
             }
+            const cartCreated: ICart = await CartService.createCart();
 
-            const userPayload = {
+            if (!cartCreated) {
+                throw new HttpError(
+                    "Cart not created",
+                    "CART_NOT_CREATED",
+                    HTTP_STATUS.SERVER_ERROR
+                );
+            }
+
+            const userPayload: IUser = new UserModel({
                 ...user,
                 password: BcryptUtils.createHash(user.password),
                 createdAt: new Date(),
-            };
+                cart: cartCreated._id,
+            });
 
-            const userCreated = await UserDao.create(userPayload);
+            const userCreated: IUser = await UserDao.create(userPayload);
 
-            const userCleaned = UserDto.userDTO(
-                userCreated as unknown as IUser
-            );
+            if (!userCreated) {
+                throw new HttpError(
+                    "User not created",
+                    "USER_NOT_CREATED",
+                    HTTP_STATUS.SERVER_ERROR
+                );
+            }
+
+            const userCleaned: UserResponse = UserDto.userDTO(userCreated);
             return userCleaned;
         } catch (err: any) {
             const error: HttpError = new HttpError(
@@ -58,14 +74,6 @@ export default class UserService {
         }
     }
 
-    /**
-     * Retrieves a user by their unique identifier.
-     *
-     * @param userId - The unique identifier of the user to retrieve.
-     * @returns A promise that resolves to the user's response data.
-     * @throws {HttpError} If the user is not found.
-     * @throws {HttpError} If there is an error retrieving the user.
-     */
     static async getUserById(userId: string): Promise<UserResponse> {
         try {
             const userFound: IUser | null = await UserDao.getById(userId);
@@ -78,9 +86,9 @@ export default class UserService {
                 );
             }
 
-            const user: UserResponse = UserDto.userDTO(userFound);
+            const userCleaned: UserResponse = UserDto.userDTO(userFound);
 
-            return user;
+            return userCleaned;
         } catch (err: any) {
             const error: HttpError = new HttpError(
                 err.description || err.message,
@@ -92,13 +100,6 @@ export default class UserService {
         }
     }
 
-    /**
-     * Retrieves all users from the database.
-     *
-     * @returns A promise that resolves to an array of user response data.
-     * @throws {HttpError} If no users are found.
-     * @throws {HttpError} If there is an error retrieving the users.
-     */
     static async getAllUsers(): Promise<UserResponse[]> {
         try {
             const usersFound: IUser[] = await UserDao.getAll();
@@ -111,9 +112,10 @@ export default class UserService {
                 );
             }
 
-            const users: UserResponse[] = UserDto.usersArrayDTO(usersFound);
+            const usersCleaned: UserResponse[] =
+                UserDto.usersArrayDTO(usersFound);
 
-            return users;
+            return usersCleaned;
         } catch (err: any) {
             const error: HttpError = new HttpError(
                 err.description || err.message,
@@ -125,21 +127,12 @@ export default class UserService {
         }
     }
 
-    /**
-     * Authenticates a user by their email and password.
-     *
-     * @param userLoginPayload - The user's email and password for login.
-     * @returns A promise that resolves to the authenticated user's response data.
-     * @throws {HttpError} If the user's credentials are invalid.
-     * @throws {HttpError} If there is an error retrieving the user.
-     */
     static async login(
         userLoginPayload: UserLoginFields
     ): Promise<UserResponse> {
         try {
-            const userFound = await UserRepository.findUserByEmail(
-                userLoginPayload.email
-            );
+            const userFound: IUser | null =
+                await UserRepository.findUserByEmail(userLoginPayload.email);
 
             if (!userFound) {
                 throw new HttpError(
@@ -150,7 +143,7 @@ export default class UserService {
             }
 
             const isValidPassword = BcryptUtils.isValidPassword(
-                userFound as unknown as IUser,
+                userFound,
                 userLoginPayload.password
             );
 
@@ -162,11 +155,9 @@ export default class UserService {
                 );
             }
 
-            const user: UserResponse = UserDto.userDTO(
-                userFound as unknown as IUser
-            );
+            const userCleaned: UserResponse = UserDto.userDTO(userFound);
 
-            return user;
+            return userCleaned;
         } catch (err: any) {
             const error: HttpError = new HttpError(
                 err.description || err.message,

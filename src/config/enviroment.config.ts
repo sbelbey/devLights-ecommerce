@@ -1,4 +1,6 @@
+// LIBRARIES
 import * as dotenv from "dotenv";
+// INTERFACES
 import { Config } from "../interfaces/config.interface";
 
 dotenv.config();

@@ -1,14 +1,14 @@
-import { Schema } from "mongoose";
-import { IUser } from "../user/interface";
+// LIBRARIES
+import { Types } from "mongoose";
 
 export interface ICategory {
-    _id: Schema.Types.ObjectId;
+    _id: Types.ObjectId;
     name: string;
     description: string;
     status: boolean;
     createdAt: Date;
     updatedAt: Date;
-    createdBy: IUser | string;
+    createdBy: Types.ObjectId;
 }
 
 export interface CategoryCreateFields {

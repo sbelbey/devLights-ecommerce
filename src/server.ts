@@ -1,6 +1,9 @@
-import express, { Request, Response } from "express";
+// LIBRARIES
+import express from "express";
+// CONFIGS
 import ExpressAppCreator from "./config/createApp";
 import MiddlewaresConfig from "./config/middlewares.config";
+// ROUTERS
 import apiRouter from "./routers";
 
 const appCreator = new ExpressAppCreator();

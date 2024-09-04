@@ -1,7 +1,10 @@
-import { Schema } from "mongoose";
+// LIBRARIES
+import { Types } from "mongoose";
+// INTERFACES
+import { ICart } from "../cart/interface";
 
 export interface IUser {
-    _id: Schema.Types.ObjectId;
+    _id: Types.ObjectId;
     firstName: string;
     lastName: string;
     email: string;
@@ -12,6 +15,7 @@ export interface IUser {
     resetToken: string;
     resetTokenExpires: number;
     isActive: boolean;
+    cart: Types.ObjectId;
 }
 
 export interface UserCreateFields {
@@ -28,6 +32,7 @@ export interface UserResponse {
     lastName: string;
     email: string;
     role: string;
+    cart?: Types.ObjectId | ICart;
 }
 
 export interface UserLoginFields {

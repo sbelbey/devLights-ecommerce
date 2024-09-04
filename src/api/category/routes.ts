@@ -1,10 +1,15 @@
+// LIBRARIES
 import { Router } from "express";
+// MIDDLEWARES
 import checkUserRole from "../../middlewares/roleChecker.middlewares";
-import { UserRole } from "../../constants/UserRole.constants";
 import schemaValidator from "../../middlewares/schemaValidators.middlewares";
-import { categoryCreatePayloadValidator } from "./validator";
-import CategoryController from "./controller";
 import { idValidator } from "../../middlewares/validators/common.validator";
+// VALIDATORS
+import { categoryCreatePayloadValidator } from "./validator";
+// CONTROLLERS
+import CategoryController from "./controller";
+// CONSTANTS
+import { UserRole } from "../../constants/UserRole.constants";
 
 const categoryRouter = Router();
 

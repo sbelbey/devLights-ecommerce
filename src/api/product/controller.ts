@@ -1,20 +1,25 @@
+// LIBRARIES
 import { Request, Response } from "express";
+// INTERFACES
 import {
     ProductCreateFields,
     ProductFilteredResponse,
     ProductResponse,
 } from "./interface";
-import ProductServices from "./service";
-import apiResponse from "../../utils/apiResponse.utils";
-import HTTP_STATUS from "../../constants/HttpStatus";
-import HttpError from "../../utils/HttpError.utils";
+// TYPES
 import { ProductSearchParamsQuery } from "./types";
+// SERVICES
+import ProductServices from "./service";
+// UTILS
+import apiResponse from "../../utils/apiResponse.utils";
+import HttpError from "../../utils/HttpError.utils";
+// CONSTANTS
+import HTTP_STATUS from "../../constants/HttpStatus";
 
 export default class ProductController {
     static async getProduct(req: Request, res: Response): Promise<Response> {
         try {
             const productSearchParams: ProductSearchParamsQuery = req.query;
-
             let productFound: ProductResponse | ProductFilteredResponse | null =
                 null;
 
@@ -50,7 +55,10 @@ export default class ProductController {
         try {
             const productPayload: ProductCreateFields = req.body;
             const productCreated: ProductResponse =
-                await ProductServices.createProduct(productPayload, req);
+                await ProductServices.createProduct(
+                    req.body.user,
+                    productPayload
+                );
 
             const response = apiResponse(true, productCreated);
 

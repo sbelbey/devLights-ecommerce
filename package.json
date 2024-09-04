@@ -16,7 +16,6 @@
     "license": "ISC",
     "devDependencies": {
         "@jest/globals": "^29.7.0",
-        "@typegoose/typegoose": "^12.6.0",
         "@types/bcrypt": "^5.0.2",
         "@types/chai": "^4.3.17",
         "@types/cookie-parser": "^1.4.7",

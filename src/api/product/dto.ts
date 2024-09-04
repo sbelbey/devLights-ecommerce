@@ -1,4 +1,4 @@
-import { ICategory } from "../category/interface";
+// INTERFACES
 import { IProduct, ProductResponse } from "./interface";
 
 export default class ProductDto {
@@ -10,12 +10,12 @@ export default class ProductDto {
             code: productFound.code,
             price: productFound.price,
             stock: productFound.stock,
-            category: productFound.category as ICategory,
+            category: productFound.category,
             isNew: productFound.isNew,
             isAvailable: productFound.isAvailable,
             status: productFound.status,
             thumbnail: productFound.thumbnail,
-            createdBy: productFound.createdBy.toString(),
+            createdBy: productFound.createdBy,
         };
     }
 
@@ -28,12 +28,12 @@ export default class ProductDto {
                 code: product.code,
                 price: product.price,
                 stock: product.stock,
-                category: product.category as ICategory,
+                category: product.category,
                 isNew: product.isNew,
                 isAvailable: product.isAvailable,
                 status: product.status,
                 thumbnail: product.thumbnail,
-                createdBy: product.createdBy?.toString() ?? "",
+                createdBy: product.createdBy,
             };
         });
     }

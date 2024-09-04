@@ -1,11 +1,8 @@
-/**
- * @file createApp.ts
- * @description This file contains the ExpressAppCreator class which is responsible for creating and configuring an Express application.
- */
-
+// LIBRERIES
 import express from "express";
 import cluster from "cluster";
 import { cpus } from "os";
+// MANAGERS
 import MongoManager from "../db/mongoManager";
 
 /**

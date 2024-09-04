@@ -1,8 +1,11 @@
+// LIBRARIES
 import { model, Schema } from "mongoose";
+// INTERFACES
+import { ICart } from "./interface";
 
 const cartCollection = "Cart";
 
-const CartSchema = new Schema({
+const CartSchema = new Schema<ICart>({
     products: [
         {
             product: {
@@ -16,14 +19,10 @@ const CartSchema = new Schema({
             },
         },
     ],
+    isActive: { type: Boolean, required: true, default: true },
     createdAt: { type: Date, required: true },
-    updatedAt: { type: Date, required: true },
-    deletedAt: { type: Date, required: true },
-    owner: {
-        type: Schema.Types.ObjectId,
-        ref: "User",
-        required: true,
-    },
+    updatedAt: { type: Date, required: false },
+    deletedAt: { type: Date, required: false },
 });
 
 const CartModel = model(cartCollection, CartSchema);

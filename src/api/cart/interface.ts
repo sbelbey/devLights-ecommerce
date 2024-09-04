@@ -1,13 +1,28 @@
-import { IProduct } from "../product/interface";
-import { IUser } from "../user/interface";
+// LIBRARIES
+import { Types } from "mongoose";
+// INTERFACES
+import { ProductResponse } from "../product/interface";
 
 export interface ICart {
+    _id: Types.ObjectId;
     products: {
-        product: IProduct;
+        product: Types.ObjectId;
         quantity: number;
     }[];
+    isActive: boolean;
     createdAt: Date;
-    updatedAt: Date;
-    deletedAt: Date;
-    owner: IUser;
+    updatedAt?: Date;
+    deletedAt?: Date;
+}
+
+export interface CartResponse {
+    _id: Types.ObjectId;
+    products: {
+        product: ProductResponse;
+        quantity: number;
+    }[];
+    isActive: boolean;
+    createdAt: Date;
+    updatedAt?: Date;
+    deletedAt?: Date;
 }

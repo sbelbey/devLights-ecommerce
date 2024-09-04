@@ -1,10 +1,12 @@
-import { create } from "domain";
+// LIBRARIES
 import { model, Schema } from "mongoose";
+// INTERFACES
+import { ICategory } from "./interface";
 
 const categoryCollection = "Category";
 
-const CategorySchema = new Schema({
-    name: { type: String, required: true },
+const CategorySchema = new Schema<ICategory>({
+    name: { type: String, required: true, unique: true },
     description: { type: String, required: true },
     status: { type: Boolean, default: true },
     createdAt: { type: Date, required: true, default: Date.now },

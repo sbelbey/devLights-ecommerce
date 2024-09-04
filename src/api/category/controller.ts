@@ -1,9 +1,14 @@
+// LIBRARIES
 import { Request, Response } from "express";
+// INTERFACES
+import { CategoryCreateFields, CategoryResponse } from "./interface";
+// SERVICES
+import CategoryService from "./service";
+// UTILS
 import apiResponse from "../../utils/apiResponse.utils";
 import HttpError from "../../utils/HttpError.utils";
+// CONSTANTS
 import HTTP_STATUS from "../../constants/HttpStatus";
-import { CategoryCreateFields, CategoryResponse } from "./interface";
-import CategoryService from "./service";
 
 export default class CategoryController {
     static async createCategory(
@@ -14,9 +19,12 @@ export default class CategoryController {
             const categoryData: CategoryCreateFields = req.body;
 
             const category: CategoryResponse =
-                await CategoryService.createCategory(req, categoryData);
+                await CategoryService.createCategory(
+                    req.body.user,
+                    categoryData
+                );
 
-            const response = apiResponse(true, categoryData);
+            const response = apiResponse(true, category);
             return res.status(HTTP_STATUS.CREATED).json(response);
         } catch (err: any) {
             const response = apiResponse(

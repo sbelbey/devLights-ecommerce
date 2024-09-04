@@ -1,4 +1,6 @@
+// LIBRARIES
 import bcrypt from "bcrypt";
+// INTERFACES
 import { IUser } from "../api/user/interface";
 
 export class BcryptUtils {

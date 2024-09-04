@@ -1,22 +1,12 @@
-import { mongoose } from "@typegoose/typegoose";
-import { Request } from "express";
+// LIBRARIES
+import { Types } from "mongoose";
 
 export default class AuditData {
-    /**
-     * Adds creation data to a payload.
-     *
-     * @param {Request} req - The request object.
-     * @param {T} payload - The payload to add creation data to.
-     * @return {T & { createdAt: Date; createdBy: string | undefined }} - The payload with creation data.
-     */
     static addCreateData<T>(
-        req: Partial<Request>,
+        user: string,
         payload: T
-    ): T & { createdAt: Date; createdBy: string | undefined } {
-        let createdBy: string | undefined;
-        if (req.body.user && typeof req.body.user === "string") {
-            createdBy = new mongoose.Types.ObjectId(req.body.user).toString();
-        }
+    ): T & { createdAt: Date; createdBy: Types.ObjectId } {
+        const createdBy: Types.ObjectId = new Types.ObjectId(user);
         return {
             ...payload,
             createdAt: new Date(),
@@ -24,21 +14,11 @@ export default class AuditData {
         };
     }
 
-    /**
-     * A description of the entire function.
-     *
-     * @param {Request} req - the request object
-     * @param {T} payload - the payload data
-     * @return {T & { updatedAt: Date; updatedBy: string | undefined }} the updated payload with additional updatedAt and updatedBy properties
-     */
     static addUpdateData<T>(
-        req: Request,
+        user: string,
         payload: T
-    ): T & { updatedAt: Date; updatedBy: string | undefined } {
-        let updatedBy: string | undefined;
-        if (req.body.user && typeof req.body.user === "string") {
-            updatedBy = new mongoose.Types.ObjectId(req.body.user).toString();
-        }
+    ): T & { updatedAt: Date; updatedBy: Types.ObjectId } {
+        const updatedBy: Types.ObjectId = new Types.ObjectId(user);
 
         return {
             ...payload,

@@ -1,4 +1,6 @@
+// INTERFACES
 import { DBConfig } from "../interfaces/config.interface";
+// ENVIROMENT VARIABLES
 import config from "./enviroment.config";
 
 const { MONGO_URI, DATABASE, DB_PASSWORD, TEST_DATABASE, NODE_ENV } = config;

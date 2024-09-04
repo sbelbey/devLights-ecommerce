@@ -1,8 +1,10 @@
-import CategoryModel from "./model";
+// INTERFACES
 import { ICategory } from "./interface";
+// MODELS
+import CategoryModel from "./model";
 
 class CategoryDAO {
-    static async create(category: Partial<ICategory>) {
+    static async create(category: Partial<ICategory>): Promise<ICategory> {
         return await CategoryModel.create(category);
     }
 

@@ -1,18 +1,26 @@
-import { Request } from "express";
-import ProductDto from "./dto";
-import HTTP_STATUS from "../../constants/HttpStatus";
-import HttpError from "../../utils/HttpError.utils";
-import ProductDAO from "./dao";
+// INTERFACES
 import {
     IProduct,
     ProductCreateFields,
     ProductFilteredResponse,
     ProductResponse,
 } from "./interface";
-import ProductRepository from "./repository";
-import AuditData from "../../utils/AuditData.utils";
-import CategoryDAO from "../category/dao";
+// TYPES
 import { ProductSearchParamsQuery } from "./types";
+// MODELS
+import ProductModel from "./model";
+// DAOS
+import CategoryDAO from "../category/dao";
+import ProductDAO from "./dao";
+// REPOSITORIES
+import ProductRepository from "./repository";
+// DTOS
+import ProductDto from "./dto";
+// UTILS
+import HttpError from "../../utils/HttpError.utils";
+import AuditData from "../../utils/AuditData.utils";
+// CONSTANTS
+import HTTP_STATUS from "../../constants/HttpStatus";
 
 export default class ProductServices {
     static async findByProductId(productId: string): Promise<ProductResponse> {
@@ -118,8 +126,8 @@ export default class ProductServices {
     }
 
     static async createProduct(
-        productPayload: ProductCreateFields,
-        req: Request
+        user: string,
+        productPayload: ProductCreateFields
     ): Promise<ProductResponse> {
         try {
             const productFound = await ProductRepository.getProductByCode(
@@ -147,15 +155,21 @@ export default class ProductServices {
             }
 
             const productWithAuditData: Partial<IProduct> =
-                AuditData.addCreateData(req, productPayload);
+                AuditData.addCreateData(user, {
+                    ...productPayload,
+                    category: categoryFound._id,
+                });
 
-            const productCreated = await ProductDAO.create(
+            const productToCreate: IProduct = new ProductModel(
                 productWithAuditData
             );
 
-            const productCreatedResponse: ProductResponse = ProductDto.single(
-                productCreated as unknown as IProduct
+            const productCreated: IProduct = await ProductDAO.create(
+                productToCreate
             );
+
+            const productCreatedResponse: ProductResponse =
+                ProductDto.single(productCreated);
 
             return productCreatedResponse;
         } catch (err: any) {

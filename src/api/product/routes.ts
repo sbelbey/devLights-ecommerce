@@ -1,9 +1,14 @@
+// LIBRARIES
 import { Router } from "express";
+// MIDDLEWARES
 import { idValidator } from "../../middlewares/validators/common.validator";
 import schemaValidator from "../../middlewares/schemaValidators.middlewares";
-import ProductController from "./controller";
-import { productCreatePayloadValidator } from "./validator";
 import checkUserRole from "../../middlewares/roleChecker.middlewares";
+// VALIDATORS
+import { productCreatePayloadValidator } from "./validator";
+// CONTROLLERS
+import ProductController from "./controller";
+// CONSTANTS
 import { UserRole } from "../../constants/UserRole.constants";
 
 const productRouter = Router();

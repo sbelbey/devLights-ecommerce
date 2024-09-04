@@ -1,10 +1,16 @@
+// LIBRARIES
 import { Request, Response } from "express";
-import HttpError from "../../utils/HttpError.utils";
-import HTTP_STATUS from "../../constants/HttpStatus";
+// INTERFACES
 import { UserCreateFields, UserLoginFields, UserResponse } from "./interface";
+// SERVICES
 import UserService from "./service";
+// UTILS
 import apiResponse from "../../utils/apiResponse.utils";
 import SessionUtils from "../../utils/Session.utils";
+import HttpError from "../../utils/HttpError.utils";
+// CONSTANTS
+import HTTP_STATUS from "../../constants/HttpStatus";
+// ENVIROMENT VARIABLES
 import config from "../../config/enviroment.config";
 
 const { SESSION_KEY } = config;
@@ -13,13 +19,6 @@ const { SESSION_KEY } = config;
  * Provides functionality for managing user-related operations in the application.
  */
 export default class UserController {
-    /**
-     * Creates a new user in the system.
-     *
-     * @param req - The Express request object containing the user data in the request body.
-     * @param res - The Express response object to send the API response.
-     * @returns A Promise that resolves to the API response with the created user data.
-     */
     static async createUser(req: Request, res: Response): Promise<Response> {
         try {
             const userData: UserCreateFields = req.body;
@@ -44,24 +43,11 @@ export default class UserController {
         }
     }
 
-    /**
-     * Retrieves a user or a list of users from the system.
-     *
-     * @param req - The Express request object containing the user ID in the query parameters.
-     * @param res - The Express response object to send the API response.
-     * @returns A Promise that resolves to the API response with the requested user data.
-     */
     static async getUser(req: Request, res: Response): Promise<Response> {
         try {
-            const userId: string | undefined = req.query.id as string;
+            const userId: string = req.params.id;
 
-            let user: UserResponse | UserResponse[] | null = null;
-
-            if (userId) {
-                user = await UserService.getUserById(userId);
-            } else {
-                user = await UserService.getAllUsers();
-            }
+            let user: UserResponse = await UserService.getUserById(userId);
 
             const response = apiResponse(true, user);
             return res.status(HTTP_STATUS.OK).json(response);
@@ -80,13 +66,27 @@ export default class UserController {
         }
     }
 
-    /**
-     * Handles the login process for a user.
-     *
-     * @param req - The Express request object containing the user login payload in the request body.
-     * @param res - The Express response object to send the API response.
-     * @returns A Promise that resolves to the API response with the authenticated user data and an access token.
-     */
+    static async getAllUsers(req: Request, res: Response): Promise<Response> {
+        try {
+            const users: UserResponse[] = await UserService.getAllUsers();
+
+            const response = apiResponse(true, users);
+            return res.status(HTTP_STATUS.OK).json(response);
+        } catch (err: any) {
+            const response = apiResponse(
+                false,
+                new HttpError(
+                    err.description || err.message,
+                    err.details || err.message,
+                    err.status || HTTP_STATUS.SERVER_ERROR
+                )
+            );
+            return res
+                .status(err.status || HTTP_STATUS.SERVER_ERROR)
+                .json(response);
+        }
+    }
+
     static async login(req: Request, res: Response): Promise<Response> {
         try {
             const loginPayload: UserLoginFields = req.body;

@@ -1,9 +1,10 @@
-import { paginate } from "mongoose-paginate-v2";
+// INTERFACES
+import { IProduct, IProductPaginated } from "./interface";
+// MODELS
 import ProductModel from "./model";
-import { IProduct } from "./interface";
 
 class ProductDAO {
-    static async create(product: Partial<IProduct>) {
+    static async create(product: Partial<IProduct>): Promise<IProduct> {
         return await ProductModel.create(product);
     }
 
@@ -15,7 +16,7 @@ class ProductDAO {
         sort: -1 | 1 | undefined,
         page: string | undefined,
         limit: string | undefined
-    ) {
+    ): Promise<IProductPaginated> {
         const query = {
             ...(category ? { category } : {}),
             ...(salersId ? { createdBy: salersId } : {}),
@@ -37,7 +38,10 @@ class ProductDAO {
     }
 
     static async getById(id: string): Promise<IProduct | null> {
-        return await ProductModel.findById(id);
+        return await ProductModel.findById(id).populate(
+            "createdBy",
+            "_id firstName lastName email"
+        );
     }
 
     static async update(

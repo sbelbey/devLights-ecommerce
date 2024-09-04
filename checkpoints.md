@@ -17,15 +17,15 @@
     - Añadir Filtro
     - Añadir Búsqueda
     - Añadir Ordenamiento
-5. Lista de Productos por Vendedor - Goal: Permitir acceder a lista de productos de un vendedor.
+5. Lista de Productos por Vendedor - Goal: Permitir acceder a lista de productos de un vendedor.(LISTO)
 6. Visualización de Producto - Goal: Permitir a los compradores acceder a más datos o detalles de un producto disponible
-    - Ver Datos de Vendedor - Goal: Obtener datos del vendedor
-7. Añadir producto a carrito de compras - Goal: Permitir al comprador poder agregar uno o más productos a carrito de compra
+    - Ver Datos de Vendedor - Goal: Obtener datos del vendedor(LISTO)
+7. Añadir producto a carrito de compras - Goal: Permitir al comprador poder agregar uno o más productos a carrito de compra(LISTO)
 
 ### Requerimientos Usuario Comprador:
 
-8. Compra de Productos - Goal: Permitir a los compradores comprar productos del carrito.
-    - Simulación de Pagos - Goal: Simular el proceso de pago al comprar un producto
+8. Compra de Productos - Goal: Permitir a los compradores comprar productos del carrito.vo
+    - Simulación de Pagos - Goal: Simular el proceso de pago al comprar un producto(LISTO)
 9. Historial de Compras - Goal: Permitir a los compradores ver su historial de compras.
 10. Edición de Perfil Comprador: Goal: Permitir a los compradores editar su perfil y cargar una imagen.
 

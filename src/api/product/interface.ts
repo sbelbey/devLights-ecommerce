@@ -1,22 +1,34 @@
-import mongoose, { Document } from "mongoose";
-import { ICategory } from "../category/interface";
-import { IUser } from "../user/interface";
+// LIBRARIES
+import { Types } from "mongoose";
 
 export interface IProduct {
-    _id: mongoose.Schema.Types.ObjectId;
+    _id: Types.ObjectId;
     title: string;
     description: string;
     code: string;
     price: number;
     stock: number;
-    category: ICategory | string;
+    category: Types.ObjectId;
     isNew: boolean;
     isAvailable: boolean;
     status: boolean;
     thumbnail: string[];
     createdAt: Date;
-    updatedAt: Date;
-    createdBy: IUser | string;
+    updatedAt?: Date;
+    createdBy: Types.ObjectId;
+}
+
+export interface IProductPaginated {
+    docs: IProduct[];
+    totalDocs: number;
+    limit: number;
+    totalPages: number;
+    page?: number | undefined;
+    pagingCounter: number;
+    hasPrevPage: boolean;
+    hasNextPage: boolean;
+    prevPage?: number | undefined | null;
+    nextPage?: number | undefined | null;
 }
 
 export interface ProductResponse {
@@ -26,12 +38,12 @@ export interface ProductResponse {
     code: string;
     price: number;
     stock: number;
-    category: ICategory;
+    category: Types.ObjectId;
     isNew: boolean;
     isAvailable: boolean;
     status: boolean;
     thumbnail: string[];
-    createdBy: string;
+    createdBy: Types.ObjectId;
 }
 
 export interface ProductFilteredResponse {

@@ -1,31 +1,19 @@
-import mongoose, { PaginateModel, Schema, model } from "mongoose";
+// LIBRARIES
+import { PaginateModel, Schema, model } from "mongoose";
 import mongoosePaginate from "mongoose-paginate-v2";
-export const productCollection = "Product";
+// INTERFACES
+import { IProduct } from "./interface";
 
-interface IProduct extends Document {
-    title: string;
-    description: string;
-    code: string;
-    price: number;
-    stock: number;
-    category: mongoose.Types.ObjectId;
-    isNew: boolean;
-    isAvailable: boolean;
-    status: boolean;
-    thumbnail: string[];
-    createdAt: Date;
-    updatedAt: Date;
-    createdBy: mongoose.Types.ObjectId;
-}
+const productCollection = "Product";
 
-const ProductSchema = new Schema({
+const ProductSchema = new Schema<IProduct>({
     title: { type: String, required: true },
     description: { type: String, required: true },
     code: { type: String, required: true },
     price: { type: Number, required: true, min: 0 },
     stock: { type: Number, required: true, min: 0 },
     category: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: Schema.Types.ObjectId,
         ref: "Category",
         required: true,
     },
@@ -35,7 +23,7 @@ const ProductSchema = new Schema({
     thumbnail: { type: [String], default: [] },
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now },
-    createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+    createdBy: { type: Schema.Types.ObjectId, ref: "User" },
 });
 
 ProductSchema.plugin(mongoosePaginate);

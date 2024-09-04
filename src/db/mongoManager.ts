@@ -1,4 +1,6 @@
+// LIBRARIES
 import mongoose from "mongoose";
+// CONFIGS
 import DB_CONFIG from "../config/db.config";
 
 export default class MongoManager {

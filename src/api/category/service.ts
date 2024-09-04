@@ -1,18 +1,22 @@
-import { Request } from "express";
-import { Document } from "mongoose";
-import HTTP_STATUS from "../../constants/HttpStatus";
-import AuditData from "../../utils/AuditData.utils";
-import HttpError from "../../utils/HttpError.utils";
+//INTERFACES
 import { CategoryCreateFields, CategoryResponse } from "./interface";
-import CategoryRepository from "./repository";
 import { ICategory } from "./interface";
+// REPOSITORIES
+import CategoryRepository from "./repository";
+// DAOS
 import CategoryDAO from "./dao";
 import CategoryDto from "./dto";
+// MODELS
 import CategoryModel from "./model";
+// UTILS
+import AuditData from "../../utils/AuditData.utils";
+import HttpError from "../../utils/HttpError.utils";
+// CONSTANTS
+import HTTP_STATUS from "../../constants/HttpStatus";
 
 export default class CategoryService {
     static async createCategory(
-        req: Request,
+        user: string,
         category: CategoryCreateFields
     ): Promise<CategoryResponse> {
         try {
@@ -29,16 +33,20 @@ export default class CategoryService {
             }
 
             const categoryWithAuditData: Partial<ICategory> =
-                AuditData.addCreateData(req, category);
+                AuditData.addCreateData(user, category);
 
-            const categoryCreated = await CategoryDAO.create(
+            const categoryPayload: ICategory = new CategoryModel(
                 categoryWithAuditData
             );
 
-            // const categoryCleaned: CategoryResponse =
-            //     CategoryDto.single(categoryCreated);
+            const categoryCreated: ICategory = await CategoryDAO.create(
+                categoryPayload
+            );
 
-            return categoryCreated as unknown as CategoryResponse;
+            const categoryCleaned: CategoryResponse =
+                CategoryDto.single(categoryCreated);
+
+            return categoryCleaned;
         } catch (err: any) {
             const error: HttpError = new HttpError(
                 err.description || err.message,

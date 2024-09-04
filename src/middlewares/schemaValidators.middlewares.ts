@@ -1,5 +1,7 @@
+// LIBRARIES
 import { Response, Request, NextFunction } from "express";
 import { AnyZodObject, ZodTypeAny, ZodError } from "zod";
+// CONSTANTS
 import HTTP_STATUS from "../constants/HttpStatus";
 
 const schemaValidator = (
@@ -14,6 +16,9 @@ const schemaValidator = (
 
             if (paramsSchema) {
                 paramsSchema.parse(req.params.id);
+                if (req.params.productId) {
+                    paramsSchema.parse(req.params.productId);
+                }
             }
             return next();
         } catch (error) {

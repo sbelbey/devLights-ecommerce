@@ -1,4 +1,6 @@
+// INTERFACE
 import { IProduct } from "./interface";
+// MODELS
 import ProductModel from "./model";
 
 export default class ProductRepository {
