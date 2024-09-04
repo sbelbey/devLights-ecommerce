@@ -25,10 +25,6 @@ export default class TicketDao {
 
     public static async getAllTickets(): Promise<ITicket[] | null> {
         return TicketModel.find()
-            .populate("cartId", "buyerName buyerEmail")
-            .populate("cartId.products.productId", "title price")
-            .populate("cartId.products.salerId", "name email")
-            .select("buyerId createdAt")
-            .exec();
+        .lean();
     }
 }
