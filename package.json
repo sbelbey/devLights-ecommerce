@@ -4,7 +4,7 @@
     "description": "",
     "main": "server.js",
     "scripts": {
-        "test": "NODE_ENV=test jest ",
+        "test": "NODE_ENV=test jest",
         "test:unit": "NODE_ENV=test mocha --exit --recursive --reporter spec --timeout 5000 --bail --exit",
         "test:integration": "NODE_ENV=test mocha --exit --recursive --reporter spec --timeout 5000 --bail --exit",
         "dev": "nodemon src/server.ts",

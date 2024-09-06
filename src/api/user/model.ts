@@ -31,6 +31,7 @@ export const UserSchema = new Schema<IUser>({
     resetToken: { type: String, default: "" },
     resetTokenExpires: { type: Number, default: 0 },
     isActive: { type: Boolean, default: true },
+    avatarUrl: { type: String, default: "" },
 });
 
 const UserModel = model(userCollection, UserSchema);

@@ -11,6 +11,7 @@ export default class UserDto {
                 email: user.email,
                 role: user.role,
                 cart: user.cart,
+                avatarUrl: user.avatarUrl,
             };
         });
     }
@@ -23,6 +24,7 @@ export default class UserDto {
             email: user.email,
             role: user.role,
             cart: user.cart,
+            avatarUrl: user.avatarUrl,
         };
     }
 }

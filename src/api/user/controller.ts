@@ -2,6 +2,7 @@
 import { Request, Response } from "express";
 // INTERFACES
 import { UserCreateFields, UserLoginFields, UserResponse } from "./interface";
+import { MulterFiles } from "../../interfaces/file.interface";
 // SERVICES
 import UserService from "./service";
 // UTILS
@@ -22,6 +23,10 @@ export default class UserController {
     static async createUser(req: Request, res: Response): Promise<Response> {
         try {
             const userData: UserCreateFields = req.body;
+            const files = req.files as MulterFiles;
+            if (files && files["profile"][0]) {
+                userData.avatarUrl = files.profile[0].path.split("public")[1];
+            }
 
             const user: UserResponse = await UserService.createUser(userData);
 

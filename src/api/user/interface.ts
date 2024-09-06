@@ -16,6 +16,7 @@ export interface IUser {
     resetTokenExpires: number;
     isActive: boolean;
     cart: Types.ObjectId;
+    avatarUrl: string;
 }
 
 export interface UserCreateFields {
@@ -24,6 +25,7 @@ export interface UserCreateFields {
     email: string;
     password: string;
     role?: string;
+    avatarUrl?: string;
 }
 
 export interface UserResponse {
@@ -33,6 +35,7 @@ export interface UserResponse {
     email: string;
     role: string;
     cart?: Types.ObjectId | ICart;
+    avatarUrl?: string;
 }
 
 export interface UserLoginFields {

@@ -10,11 +10,13 @@ import checkUserRole from "../../middlewares/roleChecker.middlewares";
 import UserController from "./controller";
 // CONSTANTS
 import { UserRole } from "../../constants/UserRole.constants";
+import { uploadFields } from "../../middlewares/uploadFields.middlewares";
 
 const userRouter = Router();
 
 userRouter.post(
     "/",
+    uploadFields,
     schemaValidator(userCreatePayloadValidator, null),
     UserController.createUser
 );
