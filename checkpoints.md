@@ -27,11 +27,11 @@
 8. Compra de Productos - Goal: Permitir a los compradores comprar productos del carrito.vo
     - Simulación de Pagos - Goal: Simular el proceso de pago al comprar un producto(LISTO)
 9. Historial de Compras - Goal: Permitir a los compradores ver su historial de compras. (LISTO)
-10. Edición de Perfil Comprador: Goal: Permitir a los compradores editar su perfil y cargar una imagen.
+10. Edición de Perfil Comprador: Goal: Permitir a los compradores editar su perfil y cargar una imagen.(LISTO)
 
 ### Requerimientos Usuario Vendedor:
 
-11. Edición de Perfil Vendedor - Goal: Permitir a vendedores cargar su perfil
+11. Edición de Perfil Vendedor - Goal: Permitir a vendedores cargar su perfil(LISTO)
 12. Administración de Mis Productos:
     -   Listado de Mis Productos
     -   Carga de Productos - Goal: Permitir al vendedor añadir nuevos productos

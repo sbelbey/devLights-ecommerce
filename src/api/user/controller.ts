@@ -1,7 +1,12 @@
 // LIBRARIES
 import { Request, Response } from "express";
 // INTERFACES
-import { UserCreateFields, UserLoginFields, UserResponse } from "./interface";
+import {
+    UserCreateFields,
+    UserLoginFields,
+    UserResponse,
+    UserUpdateFields,
+} from "./interface";
 import { MulterFiles } from "../../interfaces/file.interface";
 // SERVICES
 import UserService from "./service";
@@ -21,10 +26,11 @@ const { SESSION_KEY } = config;
  */
 export default class UserController {
     static async createUser(req: Request, res: Response): Promise<Response> {
+        // FIXME: Check if the requester is an admin, and admit only admins to create users with roles
         try {
             const userData: UserCreateFields = req.body;
             const files = req.files as MulterFiles;
-            if (files && files["profile"][0]) {
+            if (files && files["profile"] && files["profile"][0]) {
                 userData.avatarUrl = files.profile[0].path.split("public")[1];
             }
 
@@ -113,6 +119,34 @@ export default class UserController {
             return res.status(HTTP_STATUS.ACCEPTED).json(response);
         } catch (err: any) {
             // FIXME: Replace with a next function and a logger
+            const response = apiResponse(
+                false,
+                new HttpError(
+                    err.description || err.message,
+                    err.details || err.message,
+                    err.status || HTTP_STATUS.SERVER_ERROR
+                )
+            );
+            return res
+                .status(err.status || HTTP_STATUS.SERVER_ERROR)
+                .json(response);
+        }
+    }
+
+    static async updateUser(req: Request, res: Response): Promise<Response> {
+        try {
+            const userData: UserUpdateFields = req.body;
+            const userId: string = req.body.user;
+            const files = req.files as MulterFiles;
+
+            const userResponse: UserResponse = await UserService.updateUser(
+                userId,
+                userData,
+                files
+            );
+            const response = apiResponse(true, userResponse);
+            return res.status(HTTP_STATUS.OK).json(response);
+        } catch (err: any) {
             const response = apiResponse(
                 false,
                 new HttpError(

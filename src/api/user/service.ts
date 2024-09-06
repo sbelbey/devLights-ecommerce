@@ -5,6 +5,7 @@ import {
     UserCreateFields,
     UserLoginFields,
     UserResponse,
+    UserUpdateFields,
 } from "./interface";
 // MODELS
 import UserModel from "./model";
@@ -21,6 +22,7 @@ import { BcryptUtils } from "../../utils/bcrypt.utils";
 import UserDto from "./dto";
 // CONSTANTS
 import HTTP_STATUS from "../../constants/HttpStatus";
+import { MulterFiles } from "../../interfaces/file.interface";
 
 export default class UserService {
     static async createUser(user: UserCreateFields): Promise<UserResponse> {
@@ -156,6 +158,64 @@ export default class UserService {
             }
 
             const userCleaned: UserResponse = UserDto.userDTO(userFound);
+
+            return userCleaned;
+        } catch (err: any) {
+            const error: HttpError = new HttpError(
+                err.description || err.message,
+                err.details || err.message,
+                err.status || HTTP_STATUS.SERVER_ERROR
+            );
+            throw error;
+        }
+    }
+
+    static async updateUser(
+        userId: string,
+        userUpdatePayload: UserUpdateFields,
+        files?: MulterFiles
+    ): Promise<UserResponse> {
+        try {
+            const userFound: IUser | null = await UserDao.getById(userId);
+
+            if (!userFound) {
+                throw new HttpError(
+                    "User not found",
+                    "USER_NOT_FOUND",
+                    HTTP_STATUS.NOT_FOUND
+                );
+            }
+
+            let avatarUrl: string = userFound.avatarUrl;
+
+            if (files && files["profile"] && files["profile"][0]) {
+                avatarUrl = files.profile[0].path.split("public")[1];
+            }
+
+            const userToUpdate: IUser = {
+                ...userFound,
+                ...userUpdatePayload,
+                password: userUpdatePayload.password
+                    ? BcryptUtils.createHash(userUpdatePayload.password)
+                    : userFound.password,
+                updatedAt: new Date(),
+                avatarUrl,
+            };
+
+            const userUpdated: IUser | null = await UserDao.update(
+                userId,
+                userToUpdate
+            );
+
+            if (!userUpdated) {
+                throw new HttpError(
+                    "User not updated",
+                    "USER_NOT_UPDATED",
+                    HTTP_STATUS.SERVER_ERROR
+                );
+            }
+
+            const userCleaned: UserResponse = UserDto.userDTO(userUpdated);
 
             return userCleaned;
         } catch (err: any) {

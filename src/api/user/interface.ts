@@ -42,3 +42,12 @@ export interface UserLoginFields {
     email: string;
     password: string;
 }
+
+export interface UserUpdateFields {
+    firstName?: string;
+    lastName?: string;
+    email?: string;
+    password?: string;
+    role?: string;
+    avatarUrl?: string;
+}
