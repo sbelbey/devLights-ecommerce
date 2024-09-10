@@ -18,7 +18,17 @@ import HttpError from "../../utils/HttpError.utils";
 // CONSTANTS
 import HTTP_STATUS from "../../constants/HttpStatus";
 
+/**
+ * Handles the CRUD operations for products in the application.
+ */
 export default class ProductController {
+    /**
+     * Retrieves a product by its ID or a list of products based on search parameters.
+     *
+     * @param req - The Express request object containing the product search parameters.
+     * @param res - The Express response object to send the product data.
+     * @returns A Promise that resolves to the API response with the product data.
+     */
     static async getProduct(req: Request, res: Response): Promise<Response> {
         try {
             const productSearchParams: ProductSearchParamsQuery = req.query;
@@ -53,6 +63,13 @@ export default class ProductController {
         }
     }
 
+    /**
+     * Creates a new product in the system.
+     *
+     * @param req - The Express request object containing the product creation payload.
+     * @param res - The Express response object to send the created product data.
+     * @returns A Promise that resolves to the API response with the created product data.
+     */
     static async createProduct(req: Request, res: Response): Promise<Response> {
         try {
             const productPayload: ProductCreateFields = req.body;
@@ -80,6 +97,13 @@ export default class ProductController {
         }
     }
 
+    /**
+     * Updates an existing product in the system.
+     *
+     * @param req - The Express request object containing the product update payload.
+     * @param res - The Express response object to send the updated product data.
+     * @returns A Promise that resolves to the API response with the updated product data.
+     */
     static async updateProduct(req: Request, res: Response): Promise<Response> {
         try {
             const productPayload: ProductUpdateFields = req.body;
@@ -109,6 +133,13 @@ export default class ProductController {
         }
     }
 
+    /**
+     * Deletes an existing product from the system.
+     *
+     * @param req - The Express request object containing the product ID and user information.
+     * @param res - The Express response object to send the deleted product data.
+     * @returns A Promise that resolves to the API response with the deleted product data.
+     */
     static async deleteProduct(req: Request, res: Response): Promise<Response> {
         try {
             const productId: string = req.params.id;

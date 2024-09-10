@@ -15,7 +15,21 @@ import config from "../../config/enviroment.config";
 
 const { SESSION_KEY } = config;
 
+/**
+ * Handles the logic for adding a product to a user's cart and purchasing the cart.
+ *
+ * The `addToCart` method adds a product to the specified cart, ensuring that the user is the owner of the cart.
+ * The `purchase` method purchases the specified cart, generating an access token for the user.
+ */
 export default class CartController {
+    /**
+     * Adds a product to the specified cart, ensuring that the user is the owner of the cart.
+     *
+     * @param req - The Express request object, containing the cart ID, product ID, and user information.
+     * @param res - The Express response object, which will be used to send the API response.
+     * @returns A Promise that resolves to the API response, containing the updated cart information.
+     * @throws {HttpError} If the cart ID in the request does not match the cart ID in the request body, or if an error occurs during the operation.
+     */
     static async addToCart(req: Request, res: Response): Promise<Response> {
         try {
             const { id, productId } = req.params;
@@ -52,6 +66,14 @@ export default class CartController {
         }
     }
 
+    /**
+     * Purchases the specified cart, generating an access token for the user.
+     *
+     * @param req - The Express request object, containing the cart ID and user information.
+     * @param res - The Express response object, which will be used to send the API response.
+     * @returns A Promise that resolves to the API response, containing the created ticket and updated user information.
+     * @throws {HttpError} If the cart ID in the request does not match the cart ID in the request body, or if an error occurs during the operation.
+     */
     static async purchase(req: Request, res: Response): Promise<Response> {
         try {
             const { id } = req.params;

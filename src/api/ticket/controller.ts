@@ -10,7 +10,17 @@ import HttpError from "../../utils/HttpError.utils";
 // CONSTANTS
 import HTTP_STATUS from "../../constants/HttpStatus";
 
+/**
+ * Provides controller methods for handling ticket-related API requests.
+ */
 export default class TicketController {
+    /**
+     * Retrieves the list of tickets purchased by the user.
+     *
+     * @param req - The Express request object containing the user information.
+     * @param res - The Express response object to send the API response.
+     * @returns A Promise that resolves to the API response containing the list of tickets purchased by the user.
+     */
     static async getPurchases(req: Request, res: Response): Promise<Response> {
         try {
             const { user } = req.body;
@@ -43,6 +53,13 @@ export default class TicketController {
         }
     }
 
+    /**
+     * Retrieves the list of sales made by a specific saler.
+     *
+     * @param req - The Express request object containing the saler information.
+     * @param res - The Express response object to send the API response.
+     * @returns A Promise that resolves to the API response containing the list of sales made by the saler.
+     */
     static async getPurchaseBySaler(
         req: Request,
         res: Response
@@ -78,6 +95,13 @@ export default class TicketController {
         }
     }
 
+    /**
+     * Retrieves the list of purchases made by a specific user.
+     *
+     * @param req - The Express request object containing the user ID.
+     * @param res - The Express response object to send the API response.
+     * @returns A Promise that resolves to the API response containing the list of purchases made by the user.
+     */
     static async getAllPurchaseByUser(
         req: Request,
         res: Response

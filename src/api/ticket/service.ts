@@ -20,7 +20,18 @@ import HttpError from "../../utils/HttpError.utils";
 // CONSTANTS
 import HTTP_STATUS from "../../constants/HttpStatus";
 
+/**
+ * Provides functionality for managing tickets, including creating new tickets, finding a user's purchased tickets, and finding tickets sold by a specific seller.
+ */
 export default class TicketService {
+    /**
+     * Creates a new ticket based on the provided cart and user information.
+     *
+     * @param cartToPurchase - The cart response containing the details of the items to be purchased.
+     * @param user - The user who is purchasing the ticket.
+     * @returns A `TicketResponse` object representing the newly created ticket.
+     * @throws {HttpError} If an error occurs during the ticket creation process.
+     */
     static async create(
         cartToPurchase: CartResponse,
         user: IUser
@@ -52,6 +63,13 @@ export default class TicketService {
         }
     }
 
+    /**
+     * Finds all tickets purchased by the specified user.
+     *
+     * @param user - The ID of the user whose purchased tickets should be retrieved.
+     * @returns An array of `TicketResponse` objects representing the tickets purchased by the specified user.
+     * @throws {HttpError} If an error occurs while retrieving the user's purchased tickets.
+     */
     static async findUserPurchases(user: string): Promise<TicketResponse[]> {
         try {
             const ticketsFound: ITicketPopulated[] =
@@ -80,6 +98,13 @@ export default class TicketService {
         }
     }
 
+    /**
+     * Finds all tickets sold by the specified user.
+     *
+     * @param user - The ID of the user whose sold tickets should be retrieved.
+     * @returns An object containing the total number of tickets sold by the specified user.
+     * @throws {HttpError} If an error occurs while retrieving the user's sold tickets.
+     */
     static async findPurchaseBySaler(user: string): Promise<salesOfASaler> {
         try {
             const ticketsFound: salesOfASaler =

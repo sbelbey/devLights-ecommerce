@@ -8,6 +8,7 @@ import {
     UserResponse,
     UserUpdateFields,
 } from "./interface";
+import { MulterFiles } from "../../interfaces/file.interface";
 // MODELS
 import UserModel from "./model";
 // DAOS
@@ -19,14 +20,23 @@ import { CartService } from "../cart/service";
 // UTILS
 import HttpError from "../../utils/HttpError.utils";
 import { BcryptUtils } from "../../utils/bcrypt.utils";
+import AuditData from "../../utils/AuditData.utils";
 // DTOS
 import UserDto from "./dto";
 // CONSTANTS
 import HTTP_STATUS from "../../constants/HttpStatus";
-import { MulterFiles } from "../../interfaces/file.interface";
-import AuditData from "../../utils/AuditData.utils";
 
+/**
+ * Provides user-related services, including creating, retrieving, updating, and assigning roles to users.
+ */
 export default class UserService {
+    /**
+     * Creates a new user with the provided user data, including creating a new cart for the user.
+     *
+     * @param user - The user data to create the new user with.
+     * @returns A promise that resolves to the created user's response data.
+     * @throws {HttpError} If a user with the provided email already exists, or if there was an error creating the user or their cart.
+     */
     static async createUser(user: UserCreateFields): Promise<UserResponse> {
         try {
             const userFound = await UserRepository.findUserByEmail(user.email);
@@ -78,6 +88,13 @@ export default class UserService {
         }
     }
 
+    /**
+     * Retrieves a user by their unique identifier.
+     *
+     * @param userId - The unique identifier of the user to retrieve.
+     * @returns A promise that resolves to the user's response data.
+     * @throws {HttpError} If the user is not found, or an error occurs during the retrieval process.
+     */
     static async getUserById(userId: string): Promise<UserResponse> {
         try {
             const userFound: IUser | null = await UserDao.getById(userId);
@@ -104,6 +121,12 @@ export default class UserService {
         }
     }
 
+    /**
+     * Retrieves all users from the database.
+     *
+     * @returns A promise that resolves to an array of user response data.
+     * @throws {HttpError} If no users are found, or an error occurs during the retrieval process.
+     */
     static async getAllUsers(): Promise<UserResponse[]> {
         try {
             const usersFound: IUser[] = await UserDao.getAll();
@@ -131,6 +154,13 @@ export default class UserService {
         }
     }
 
+    /**
+     * Authenticates a user by verifying their email and password.
+     *
+     * @param userLoginPayload - An object containing the user's email and password.
+     * @returns A promise that resolves to the authenticated user's response data.
+     * @throws {HttpError} If the user is not found or the password is invalid.
+     */
     static async login(
         userLoginPayload: UserLoginFields
     ): Promise<UserResponse> {
@@ -172,6 +202,15 @@ export default class UserService {
         }
     }
 
+    /**
+     * Updates a user's information in the database.
+     *
+     * @param userId - The ID of the user to update.
+     * @param userUpdatePayload - An object containing the updated user information.
+     * @param files - An optional object containing any uploaded files, such as a profile picture.
+     * @returns A promise that resolves to the updated user's response data.
+     * @throws {HttpError} If the user is not found or the update fails.
+     */
     static async updateUser(
         userId: string,
         userUpdatePayload: UserUpdateFields,
@@ -230,6 +269,14 @@ export default class UserService {
         }
     }
 
+    /**
+     * Assigns a new role to a user.
+     *
+     * @param userToChange - The ID of the user to update.
+     * @param data - An object containing the new role to assign to the user.
+     * @returns The updated user data.
+     * @throws {HttpError} If the user is not found or the update fails.
+     */
     static async assignRole(
         userToChange: string,
         data: assignRoleFields

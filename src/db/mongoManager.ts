@@ -3,6 +3,12 @@ import mongoose from "mongoose";
 // CONFIGS
 import DB_CONFIG from "../config/db.config";
 
+/**
+ * Manages the connection to a MongoDB database using the Mongoose library.
+ * This class is a singleton, ensuring there is only one instance of the MongoDB connection.
+ * It connects to the MongoDB database using the configuration settings from the `db.config.ts` file.
+ * If the connection is successful, it logs a success message. If there is an error, it logs the error and throws an exception.
+ */
 export default class MongoManager {
     private static _instance: MongoManager | null = null;
 

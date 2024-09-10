@@ -10,7 +10,17 @@ import HttpError from "../../utils/HttpError.utils";
 // CONSTANTS
 import HTTP_STATUS from "../../constants/HttpStatus";
 
+/**
+ * Provides controller methods for managing categories.
+ */
 export default class CategoryController {
+    /**
+     * Creates a new category.
+     *
+     * @param req - The Express request object.
+     * @param res - The Express response object.
+     * @returns A Promise that resolves to the created category.
+     */
     static async createCategory(
         req: Request,
         res: Response
@@ -41,6 +51,16 @@ export default class CategoryController {
         }
     }
 
+    /**
+     * Retrieves categories from the database.
+     *
+     * If a `categoryId` query parameter is provided, it will retrieve a single category by its ID.
+     * Otherwise, it will retrieve all categories.
+     *
+     * @param req - The Express request object, containing the `categoryId` query parameter.
+     * @param res - The Express response object, which will be used to send the retrieved categories.
+     * @returns A Promise that resolves to the retrieved categories.
+     */
     static async getCategories(req: Request, res: Response): Promise<Response> {
         try {
             const categoryId: string | undefined = req.query.id as string;

@@ -17,12 +17,18 @@ import { UserRole } from "../../constants/UserRole.constants";
 
 const productRouter = Router();
 
+/**
+ * Retrieves a product.
+ */
 productRouter.get(
     "/",
     schemaValidator(null, idValidator),
     ProductController.getProduct
 );
 
+/**
+ * Creates a new product.
+ */
 productRouter.post(
     "/",
     uploadFields,
@@ -31,6 +37,12 @@ productRouter.post(
     ProductController.createProduct
 );
 
+/**
+ * Updates an existing product.
+ *
+ * @param id - The ID of the product to update.
+ * @param body - The updated product data.∫
+ */
 productRouter.put(
     "/:id",
     uploadFields,
@@ -39,6 +51,11 @@ productRouter.put(
     ProductController.updateProduct
 );
 
+/**
+ * Deletes an existing product.∫
+ *
+ * @param id - The ID of the product to delete.
+ */
 productRouter.delete(
     "/:id",
     checkUserRole([UserRole.ADMIN, UserRole.SALER]),

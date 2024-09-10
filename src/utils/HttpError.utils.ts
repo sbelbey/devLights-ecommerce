@@ -1,3 +1,6 @@
+/**
+ * Represents an HTTP error with a status code, description, and optional details.
+ */
 export default class HttpError {
     public description: string;
 

@@ -21,7 +21,15 @@ import HTTP_STATUS from "../../constants/HttpStatus";
 import ProductDto from "../product/dto";
 import UserDto from "../user/dto";
 
+/**
+ * Provides functionality for managing a user's shopping cart, including creating a new cart, adding products to the cart, and purchasing the items in the cart.
+ */
 export class CartService {
+    /**
+     * Creates a new cart in the database.
+     * @returns {Promise<CartPopulated>} The newly created cart.
+     * @throws {HttpError} If there is an error creating the cart.
+     */
     static async createCart(): Promise<CartPopulated> {
         try {
             const cartPayload: ICart = new CartModel({
@@ -42,16 +50,26 @@ export class CartService {
         }
     }
 
+    /**
+     * Adds a product to the specified user's cart.
+     * @param cartIdRequested - The ID of the cart to add the product to.
+     * @param productId - The ID of the product to add to the cart.
+     * @param user - The ID of the user whose cart the product should be added to.
+     * @returns {Promise<CartResponse>} The updated cart with the new product added.
+     * @throws {HttpError} If the cart or product is not found, or if there is an error updating the cart.
+     */
     static async addToCart(
         cartIdRequested: string,
         productId: string,
         user: string
     ): Promise<CartResponse> {
         try {
+            // Find the cart by its ID
             const cartFound: CartPopulated | null = await CartDao.getById(
                 cartIdRequested
             );
 
+            // If the cart is not found, throw an error
             if (!cartFound) {
                 const error: HttpError = new HttpError(
                     "Cart not found",
@@ -61,9 +79,11 @@ export class CartService {
                 throw error;
             }
 
+            // Find the product by its ID
             const productFound: ProductFindPopulated | null =
                 await ProductDao.getById(productId);
 
+            // If the product is not found, throw an error
             if (!productFound) {
                 const error: HttpError = new HttpError(
                     "Product not found",
@@ -77,18 +97,21 @@ export class CartService {
                 | { product: Types.ObjectId; quantity: number }
                 | undefined = undefined;
 
+            // Check if the cart is empty or if the product is not already in the cart
             if (
                 !cartFound.products.length ||
                 cartFound.products.some(
                     (item) => item.product._id.toString() !== productId
                 )
             ) {
+                // If the cart is empty or the product is not in the cart, add the product with a quantity of 1
                 firstProduct = {
                     product: new Types.ObjectId(productFound._id),
                     quantity: 1,
                 };
             }
 
+            // Create a new cart object with the updated product list and updated timestamp
             const cartModeled: ICart = {
                 ...cartFound,
                 products: [
@@ -98,11 +121,13 @@ export class CartService {
                             individualProduct.product._id.toString() ===
                             productId
                         ) {
+                            // If the product is already in the cart, increase its quantity by 1
                             return {
                                 product: individualProduct.product._id,
                                 quantity: individualProduct.quantity + 1,
                             };
                         }
+                        // Otherwise, keep the quantity unchanged
                         return {
                             product: individualProduct.product._id,
                             quantity: individualProduct.quantity,
@@ -112,11 +137,13 @@ export class CartService {
                 updatedAt: new Date(),
             };
 
+            // Update the cart in the database
             const cartUpdated: CartPopulated | null = await CartDao.update(
                 cartIdRequested,
                 cartModeled
             );
 
+            // If the cart update fails, throw an error
             if (!cartUpdated) {
                 const error: HttpError = new HttpError(
                     "Cart not updated",
@@ -126,6 +153,7 @@ export class CartService {
                 throw error;
             }
 
+            // Create a cart response object with the updated cart and populated product details
             const cartResponse: CartResponse = {
                 ...cartUpdated,
                 products: cartUpdated.products.map((item) => {
@@ -138,6 +166,7 @@ export class CartService {
                 }),
             };
 
+            // Return the updated cart response
             return cartResponse;
         } catch (err: any) {
             const error: HttpError = new HttpError(
@@ -150,6 +179,24 @@ export class CartService {
         }
     }
 
+    /**
+     * Purchases the cart associated with the provided `cartIdRequested` and the `user`.
+     *
+     * This method performs the following steps:
+     * 1. Retrieves the cart by the provided `cartIdRequested`.
+     * 2. Checks if the cart exists and if there is enough stock for each product in the cart.
+     * 3. Creates a ticket for the cart.
+     * 4. Updates the cart to be inactive.
+     * 5. Creates a new cart for the user.
+     * 6. Updates the user's cart reference to the newly created cart.
+     * 7. Updates the stock for each product in the purchased cart.
+     * 8. Returns the created ticket and the updated user response.
+     *
+     * @param cartIdRequested - The ID of the cart to be purchased.
+     * @param user - The ID of the user purchasing the cart.
+     * @returns An object containing the created ticket and the updated user response.
+     * @throws {HttpError} If the cart is not found, there is insufficient stock, or any other error occurs during the purchase process.
+     */
     static async purchase(
         cartIdRequested: string,
         user: string
@@ -158,10 +205,12 @@ export class CartService {
         userUpdateResponse: UserResponse;
     }> {
         try {
+            // Step 1: Retrieve the cart by the provided `cartIdRequested`
             const cartFound: CartPopulated | null = await CartDao.getById(
                 cartIdRequested
             );
 
+            // Step 2: Check if the cart exists and if there is enough stock for each product in the cart
             if (!cartFound) {
                 const error: HttpError = new HttpError(
                     "Cart not found",
@@ -185,6 +234,7 @@ export class CartService {
                 }
             }
 
+            // Step 3: Create a ticket for the cart
             const cartResponsed: CartResponse = {
                 ...cartFound,
                 products: cartFound.products.map((item) => {
@@ -207,6 +257,9 @@ export class CartService {
                 );
             }
 
+            // Step 4: Update the cart to be inactive
+            // Step 5: Create a new cart for the user
+            // Step 6: Update the user's cart reference to the newly created cart
             const [ticketCreated, cartUpdated, cartCreated] = await Promise.all(
                 [
                     TicketService.create(cartResponsed, userFound),
@@ -241,9 +294,7 @@ export class CartService {
                 throw error;
             }
 
-            const userUpdateResponse: UserResponse =
-                UserDto.userDTO(userUpdated);
-
+            // Step 7: Update the stock for each product in the purchased cart
             for (const item of cartFound.products) {
                 const productFound: ProductFindPopulated | null =
                     await ProductDao.getById(item.product._id.toString());
@@ -257,7 +308,11 @@ export class CartService {
                 }
             }
 
-            return { ticketCreated, userUpdateResponse };
+            // Step 8: Return the created ticket and the updated user response
+            return {
+                ticketCreated,
+                userUpdateResponse: UserDto.userDTO(userUpdated),
+            };
         } catch (err: any) {
             const error: HttpError = new HttpError(
                 err.description || err.message,

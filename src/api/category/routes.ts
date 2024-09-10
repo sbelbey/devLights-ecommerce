@@ -13,6 +13,9 @@ import { UserRole } from "../../constants/UserRole.constants";
 
 const categoryRouter = Router();
 
+/**
+ * Create a new category.
+ */
 categoryRouter.post(
     "/",
     checkUserRole([UserRole.ADMIN]),
@@ -20,6 +23,9 @@ categoryRouter.post(
     CategoryController.createCategory
 );
 
+/**
+ * Get a list of all categories.
+ */
 categoryRouter.get(
     "/",
     schemaValidator(null, idValidator),

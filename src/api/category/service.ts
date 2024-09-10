@@ -14,7 +14,18 @@ import HttpError from "../../utils/HttpError.utils";
 // CONSTANTS
 import HTTP_STATUS from "../../constants/HttpStatus";
 
+/**
+ * Provides functionality for managing categories in the application.
+ */
 export default class CategoryService {
+    /**
+     * Creates a new category in the system.
+     *
+     * @param user - The user creating the category.
+     * @param category - The fields to create the new category.
+     * @returns The created category.
+     * @throws {HttpError} If a category with the same name already exists.
+     */
     static async createCategory(
         user: string,
         category: CategoryCreateFields
@@ -58,6 +69,13 @@ export default class CategoryService {
         }
     }
 
+    /**
+     * Retrieves a single category by its ID.
+     *
+     * @param categoryId - The ID of the category to retrieve.
+     * @returns The retrieved category.
+     * @throws {HttpError} If the category with the given ID is not found.
+     */
     static async getCategory(categoryId: string): Promise<CategoryResponse> {
         try {
             const categoryFound: ICategory | null = await CategoryDAO.getById(
@@ -85,6 +103,12 @@ export default class CategoryService {
         }
     }
 
+    /**
+     * Retrieves all categories.
+     *
+     * @returns An array of `CategoryResponse` objects representing the retrieved categories.
+     * @throws {HttpError} If no categories are found.
+     */
     static async getCategories(): Promise<CategoryResponse[]> {
         try {
             const categoriesFound: ICategory[] = await CategoryDAO.getAll();

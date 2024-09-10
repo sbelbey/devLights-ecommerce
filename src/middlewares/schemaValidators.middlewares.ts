@@ -4,6 +4,13 @@ import { AnyZodObject, ZodTypeAny, ZodError } from "zod";
 // CONSTANTS
 import HTTP_STATUS from "../constants/HttpStatus";
 
+/**
+ * Middleware function that validates the request body and parameters using Zod schemas.
+ *
+ * @param {AnyZodObject | null} schema - The Zod schema to validate the request body against.
+ * @param {ZodTypeAny | null} paramsSchema - The Zod schema to validate the request parameters against.
+ * @returns {(req: Request, res: Response, next: NextFunction) => void} - The middleware function that performs the validation.
+ */
 const schemaValidator = (
     schema: AnyZodObject | null,
     paramsSchema: ZodTypeAny | null

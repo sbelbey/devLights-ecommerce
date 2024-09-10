@@ -26,6 +26,13 @@ const { SESSION_KEY } = config;
  * Provides functionality for managing user-related operations in the application.
  */
 export default class UserController {
+    /**
+     * Creates a new user in the system.
+     *
+     * @param req - The Express request object containing the user data.
+     * @param res - The Express response object to send the created user data.
+     * @returns A Promise that resolves to the created user data.
+     */
     static async createUser(req: Request, res: Response): Promise<Response> {
         // FIXME: Check if the requester is an admin, and admit only admins to create users with roles
         try {
@@ -55,6 +62,13 @@ export default class UserController {
         }
     }
 
+    /**
+     * Retrieves a user by their unique identifier.
+     *
+     * @param req - The Express request object containing the user ID in the URL parameters.
+     * @param res - The Express response object to send the retrieved user data.
+     * @returns A Promise that resolves to the retrieved user data.
+     */
     static async getUser(req: Request, res: Response): Promise<Response> {
         try {
             const userId: string = req.params.id;
@@ -78,6 +92,13 @@ export default class UserController {
         }
     }
 
+    /**
+     * Retrieves all users from the system.
+     *
+     * @param req - The Express request object.
+     * @param res - The Express response object to send the retrieved user data.
+     * @returns A Promise that resolves to the retrieved user data.
+     */
     static async getAllUsers(req: Request, res: Response): Promise<Response> {
         try {
             const users: UserResponse[] = await UserService.getAllUsers();
@@ -99,6 +120,13 @@ export default class UserController {
         }
     }
 
+    /**
+     * Handles the login process for a user.
+     *
+     * @param req - The Express request object containing the user's login payload.
+     * @param res - The Express response object to send the authenticated user data.
+     * @returns A Promise that resolves to the authenticated user data.
+     */
     static async login(req: Request, res: Response): Promise<Response> {
         try {
             const loginPayload: UserLoginFields = req.body;
@@ -134,6 +162,13 @@ export default class UserController {
         }
     }
 
+    /**
+     * Updates a user's information in the system.
+     *
+     * @param req - The Express request object containing the user data to update.
+     * @param res - The Express response object to send the updated user data.
+     * @returns A Promise that resolves to the updated user data.
+     */
     static async updateUser(req: Request, res: Response): Promise<Response> {
         try {
             const userData: UserUpdateFields = req.body;
@@ -162,6 +197,13 @@ export default class UserController {
         }
     }
 
+    /**
+     * Assigns a role to a user in the system.
+     *
+     * @param req - The Express request object containing the user ID and role data to assign.
+     * @param res - The Express response object to send the updated user data.
+     * @returns A Promise that resolves to the updated user data.
+     */
     static async assignRole(req: Request, res: Response): Promise<Response> {
         try {
             const data: assignRoleFields = req.body;

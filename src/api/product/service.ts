@@ -7,6 +7,7 @@ import {
     ProductResponse,
     ProductUpdateFields,
 } from "./interface";
+import { MulterFiles } from "../../interfaces/file.interface";
 // TYPES
 import { ProductSearchParamsQuery } from "./types";
 // MODELS
@@ -23,9 +24,18 @@ import HttpError from "../../utils/HttpError.utils";
 import AuditData from "../../utils/AuditData.utils";
 // CONSTANTS
 import HTTP_STATUS from "../../constants/HttpStatus";
-import { MulterFiles } from "../../interfaces/file.interface";
 
+/**
+ * Provides methods for managing products, including finding products by ID or search parameters, creating new products, updating existing products, and deleting products.
+ */
 export default class ProductServices {
+    /**
+     * Finds a product by its ID and returns the product details.
+     *
+     * @param productId - The ID of the product to find.
+     * @returns A promise that resolves to the product details.
+     * @throws {HttpError} If the product is not found.
+     */
     static async findByProductId(productId: string): Promise<ProductResponse> {
         try {
             const producFound: ProductFindPopulated | null =
@@ -53,6 +63,13 @@ export default class ProductServices {
         }
     }
 
+    /**
+     * Finds products based on the provided search parameters and returns a paginated response.
+     *
+     * @param productSearchParams - An object containing the search parameters, including category, salersId, price range, and pagination options.
+     * @returns A promise that resolves to a paginated response containing the matching products.
+     * @throws {HttpError} If no products are found matching the search parameters.
+     */
     static async findProducts(
         productSearchParams: ProductSearchParamsQuery
     ): Promise<ProductFilteredResponse> {
@@ -127,6 +144,14 @@ export default class ProductServices {
         }
     }
 
+    /**
+     * Creates a new product in the system.
+     *
+     * @param user - The ID of the user creating the product.
+     * @param productPayload - The fields required to create a new product.
+     * @returns A promise that resolves to the created product response.
+     * @throws {HttpError} If a product with the same code already exists, or if the specified category is not found.
+     */
     static async createProduct(
         user: string,
         productPayload: ProductCreateFields
@@ -183,6 +208,15 @@ export default class ProductServices {
         }
     }
 
+    /**
+     * Updates an existing product in the system.
+     *
+     * @param productId - The ID of the product to update.
+     * @param productPayload - The updated product data.
+     * @param files - Optional files to update the product's thumbnail.
+     * @returns A promise that resolves to the updated product response.
+     * @throws {HttpError} If the product is not found, the user is not authorized to update the product, or an error occurs during the update process.
+     */
     static async updateProduct(
         productId: string,
         productPayload: ProductUpdateFields,
@@ -276,6 +310,14 @@ export default class ProductServices {
         }
     }
 
+    /**
+     * Deletes a product from the database.
+     *
+     * @param productId - The ID of the product to delete.
+     * @param user - The ID of the user deleting the product.
+     * @returns The deleted product response.
+     * @throws {HttpError} If the product is not found or the user is not authorized to delete the product.
+     */
     static async deleteProduct(
         productId: string,
         user: string

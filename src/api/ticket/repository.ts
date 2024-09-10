@@ -5,7 +5,16 @@ import { ITicketPopulated, salesOfASaler } from "./interface";
 // MODELS
 import TicketModel from "./model";
 
+/**
+ * Provides methods for interacting with ticket data in the database.
+ */
 export default class TicketRepository {
+    /**
+     * Finds all tickets associated with the given buyer ID.
+     *
+     * @param userId - The ID of the buyer to find tickets for.
+     * @returns A Promise that resolves to an array of populated ticket objects.
+     */
     static async findTicketsByBuyerId(
         userId: string
     ): Promise<ITicketPopulated[]> {
@@ -22,6 +31,12 @@ export default class TicketRepository {
             .lean();
     }
 
+    /**
+     * Finds all tickets associated with the given seller ID, including the total number of tickets, total products, total amount, and a list of the tickets.
+     *
+     * @param userId - The ID of the seller to find tickets for.
+     * @returns A Promise that resolves to an object containing the sales data for the given seller.
+     */
     static async findTicketsBySellerId(userId: string): Promise<salesOfASaler> {
         const salerId = new Types.ObjectId(userId);
         const tickets = await TicketModel.aggregate([

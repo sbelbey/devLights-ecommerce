@@ -3,7 +3,18 @@ import { CartResponse } from "../cart/interface";
 import { IUser } from "../user/interface";
 import { ITicket, ITicketPopulated, TicketResponse } from "./interface";
 
+/**
+ * Provides methods for generating ticket response data.
+ */
 export default class TicketDto {
+    /**
+     * Generates a single ticket response object from the provided ticket, cart, and user data.
+     *
+     * @param ticketCreated - The ticket object to generate the response from.
+     * @param cart - The cart object associated with the ticket.
+     * @param user - The user object associated with the ticket.
+     * @returns A TicketResponse object containing the ticket details.
+     */
     static single(
         ticketCreated: ITicket,
         cart: CartResponse,
@@ -31,6 +42,12 @@ export default class TicketDto {
         };
     }
 
+    /**
+     * Generates an array of TicketResponse objects from the provided array of ITicketPopulated objects.
+     *
+     * @param tickets - An array of ITicketPopulated objects representing the tickets to generate the responses for.
+     * @returns An array of TicketResponse objects containing the details of the provided tickets.
+     */
     static multiple(tickets: ITicketPopulated[]): TicketResponse[] {
         return tickets.map((ticket) => {
             return {
