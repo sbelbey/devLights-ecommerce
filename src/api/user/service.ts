@@ -1,5 +1,5 @@
 // INTERFACES
-import { ICart } from "../cart/interface";
+import { CartPopulated, ICart } from "../cart/interface";
 import {
     IUser,
     UserCreateFields,
@@ -36,7 +36,7 @@ export default class UserService {
                     HTTP_STATUS.CONFLICT
                 );
             }
-            const cartCreated: ICart = await CartService.createCart();
+            const cartCreated: CartPopulated = await CartService.createCart();
 
             if (!cartCreated) {
                 throw new HttpError(

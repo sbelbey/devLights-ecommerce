@@ -3,7 +3,7 @@ import { DBConfig } from "../interfaces/config.interface";
 // ENVIROMENT VARIABLES
 import config from "./enviroment.config";
 
-const { MONGO_URI, DATABASE, DB_PASSWORD, TEST_DATABASE, NODE_ENV } = config;
+const { MONGO_URI, DATABASE, TEST_DATABASE, NODE_ENV } = config;
 
 const databaseName = NODE_ENV === "test" ? TEST_DATABASE : DATABASE;
 

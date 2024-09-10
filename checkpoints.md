@@ -33,10 +33,10 @@
 
 11. Edición de Perfil Vendedor - Goal: Permitir a vendedores cargar su perfil(LISTO)
 12. Administración de Mis Productos:
-    -   Listado de Mis Productos
-    -   Carga de Productos - Goal: Permitir al vendedor añadir nuevos productos
-    -   Edición de Productos - Goal: Permitir al vendedor modificar la información de los productos
-    -   Eliminación de Productos - Goal: Permitir al vendedor eliminar productos
+    -   Listado de Mis Productos (LISTO)
+    -   Carga de Productos - Goal: Permitir al vendedor añadir nuevos productos (LISTO)
+    -   Edición de Productos - Goal: Permitir al vendedor modificar la información de los productos (LISTO)
+    -   Eliminación de Productos - Goal: Permitir al vendedor eliminar productos(LISTO)
     -   Listado de Ventas
 
 ### Requerimientos Usuario Administrador:

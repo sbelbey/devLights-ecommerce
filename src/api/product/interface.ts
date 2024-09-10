@@ -1,5 +1,8 @@
 // LIBRARIES
 import { Types } from "mongoose";
+// INTERFACES
+import { ICategory } from "../category/interface";
+import { IUser } from "../user/interface";
 
 export interface IProduct {
     _id: Types.ObjectId;
@@ -82,4 +85,34 @@ export interface ProductCreateFields {
     isAvailable?: boolean;
     status?: boolean;
     thumbnail?: string[];
+    user: string;
+}
+
+export interface ProductUpdateFields {
+    title?: string;
+    description?: string;
+    code?: string;
+    price?: number;
+    stock?: number;
+    category?: string;
+    isNew?: boolean;
+    isAvailable?: boolean;
+    status?: boolean;
+    thumbnail?: string[];
+    user: string;
+}
+
+export interface ProductFindPopulated {
+    _id: Types.ObjectId;
+    title: string;
+    description: string;
+    code: string;
+    price: number;
+    stock: number;
+    category: ICategory;
+    isNew: boolean;
+    isAvailable: boolean;
+    status: boolean;
+    thumbnail: string[];
+    createdBy: IUser;
 }

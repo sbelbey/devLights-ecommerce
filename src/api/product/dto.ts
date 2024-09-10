@@ -1,8 +1,15 @@
+// LIBRARIES
+import mongoose from "mongoose";
 // INTERFACES
-import { IProduct, ProductResponse } from "./interface";
+import {
+    IProduct,
+    ProductFindPopulated,
+    ProductResponse,
+    ProductUpdateFields,
+} from "./interface";
 
 export default class ProductDto {
-    static single(productFound: IProduct): ProductResponse {
+    static single(productFound: ProductFindPopulated): ProductResponse {
         return {
             id: productFound._id.toString(),
             title: productFound.title,
@@ -10,12 +17,12 @@ export default class ProductDto {
             code: productFound.code,
             price: productFound.price,
             stock: productFound.stock,
-            category: productFound.category,
+            category: productFound.category._id,
             isNew: productFound.isNew,
             isAvailable: productFound.isAvailable,
             status: productFound.status,
             thumbnail: productFound.thumbnail,
-            createdBy: productFound.createdBy,
+            createdBy: productFound.createdBy._id,
         };
     }
 
@@ -36,5 +43,19 @@ export default class ProductDto {
                 createdBy: product.createdBy,
             };
         });
+    }
+
+    static productToUpdatePayload(
+        productFound: ProductFindPopulated,
+        productPayload: ProductUpdateFields
+    ): Partial<IProduct> {
+        return {
+            ...productFound,
+            ...productPayload,
+            category: productPayload.category
+                ? new mongoose.Types.ObjectId(String(productPayload.category))
+                : productFound.category._id,
+            createdBy: productFound.createdBy._id,
+        };
     }
 }

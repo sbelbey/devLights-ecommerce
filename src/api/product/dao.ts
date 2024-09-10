@@ -1,11 +1,18 @@
+// LIBRARIES
+import { Types } from "mongoose";
 // INTERFACES
-import { IProduct, IProductPaginated } from "./interface";
+import { IProduct, IProductPaginated, ProductFindPopulated } from "./interface";
 // MODELS
 import ProductModel from "./model";
 
 class ProductDAO {
-    static async create(product: Partial<IProduct>): Promise<IProduct> {
-        return await ProductModel.create(product);
+    static async create(
+        product: Partial<IProduct>
+    ): Promise<ProductFindPopulated> {
+        return (await ProductModel.create(product)).populate([
+            "createdBy",
+            "category",
+        ]);
     }
 
     static async getAll(
@@ -23,6 +30,7 @@ class ProductDAO {
             ...(priceStart && priceEnd
                 ? { price: { $gte: priceStart, $lte: priceEnd } }
                 : {}),
+            status: true,
         };
 
         const options = {
@@ -37,24 +45,33 @@ class ProductDAO {
         return result;
     }
 
-    static async getById(id: string): Promise<IProduct | null> {
-        return await ProductModel.findById(id).populate(
-            "createdBy",
-            "_id firstName lastName email"
-        );
+    static async getById(id: string): Promise<ProductFindPopulated | null> {
+        return await ProductModel.findOne({
+            $and: [{ _id: new Types.ObjectId(id) }, { status: true }],
+        })
+            .populate(["createdBy", "category"])
+            .lean();
     }
 
     static async update(
         id: string,
         updateData: Partial<IProduct>
-    ): Promise<IProduct | null> {
+    ): Promise<ProductFindPopulated | null> {
         return await ProductModel.findByIdAndUpdate(id, updateData, {
             new: true,
-        });
+        })
+            .populate(["createdBy", "category"])
+            .lean();
     }
 
-    static async delete(id: string): Promise<IProduct | null> {
-        return await ProductModel.findByIdAndDelete(id);
+    static async delete(id: string): Promise<ProductFindPopulated | null> {
+        return await ProductModel.findByIdAndUpdate(
+            id,
+            { status: false },
+            { new: true }
+        )
+            .populate(["createdBy", "category"])
+            .lean();
     }
 }
 

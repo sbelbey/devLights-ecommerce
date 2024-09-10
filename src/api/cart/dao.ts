@@ -1,20 +1,23 @@
 // LIBRARIES
-import { Document, Types } from "mongoose";
+import { Types } from "mongoose";
 // INTERFACES
-import { ICart } from "./interface";
+import { CartPopulated, ICart } from "./interface";
 // MODELS
 import CartModel from "./model";
 
 class CartDao {
-    static async create(cart: ICart): Promise<ICart> {
-        return await CartModel.create(cart);
+    static async create(cart: ICart): Promise<CartPopulated> {
+        return (await CartModel.create(cart)).populate({
+            path: "products",
+            populate: { path: "product", model: "Product" },
+        });
     }
 
     static async getAll(): Promise<ICart[]> {
         return await CartModel.find();
     }
 
-    static async getById(id: string): Promise<ICart | null> {
+    static async getById(id: string): Promise<CartPopulated | null> {
         return await CartModel.findById(id)
             .populate({
                 path: "products",
@@ -30,7 +33,10 @@ class CartDao {
             .lean();
     }
 
-    static async update(id: string, cart: ICart): Promise<ICart | null> {
+    static async update(
+        id: string,
+        cart: ICart
+    ): Promise<CartPopulated | null> {
         return await CartModel.findByIdAndUpdate(new Types.ObjectId(id), cart, {
             new: true,
         })

@@ -1,8 +1,8 @@
 // LIBRARIES
 import { Types } from "mongoose";
 // INTERFACES
-import { CartResponse, ICart } from "./interface";
-import { IProduct } from "../product/interface";
+import { CartPopulated, CartResponse, ICart } from "./interface";
+import { ProductFindPopulated } from "../product/interface";
 import { TicketResponse } from "../ticket/interface";
 import { UserResponse } from "../user/interface";
 // DAOS
@@ -22,7 +22,7 @@ import ProductDto from "../product/dto";
 import UserDto from "../user/dto";
 
 export class CartService {
-    static async createCart(): Promise<ICart> {
+    static async createCart(): Promise<CartPopulated> {
         try {
             const cartPayload: ICart = new CartModel({
                 products: [],
@@ -48,7 +48,7 @@ export class CartService {
         user: string
     ): Promise<CartResponse> {
         try {
-            const cartFound: ICart | null = await CartDao.getById(
+            const cartFound: CartPopulated | null = await CartDao.getById(
                 cartIdRequested
             );
 
@@ -61,9 +61,8 @@ export class CartService {
                 throw error;
             }
 
-            const productFound: IProduct | null = await ProductDao.getById(
-                productId
-            );
+            const productFound: ProductFindPopulated | null =
+                await ProductDao.getById(productId);
 
             if (!productFound) {
                 const error: HttpError = new HttpError(
@@ -74,25 +73,46 @@ export class CartService {
                 throw error;
             }
 
-            const productIndex: number = cartFound.products.findIndex(
-                (item) => item.product._id.toString() === productId
-            );
+            let firstProduct:
+                | { product: Types.ObjectId; quantity: number }
+                | undefined = undefined;
 
-            if (productIndex !== -1) {
-                cartFound.products[productIndex].quantity += 1;
-            } else {
-                cartFound.products.push({
-                    product: new Types.ObjectId(productId),
+            if (
+                !cartFound.products.length ||
+                cartFound.products.some(
+                    (item) => item.product._id.toString() !== productId
+                )
+            ) {
+                firstProduct = {
+                    product: new Types.ObjectId(productFound._id),
                     quantity: 1,
-                });
+                };
             }
 
             const cartModeled: ICart = {
                 ...cartFound,
+                products: [
+                    ...(firstProduct ? [firstProduct] : []),
+                    ...cartFound.products.map((individualProduct) => {
+                        if (
+                            individualProduct.product._id.toString() ===
+                            productId
+                        ) {
+                            return {
+                                product: individualProduct.product._id,
+                                quantity: individualProduct.quantity + 1,
+                            };
+                        }
+                        return {
+                            product: individualProduct.product._id,
+                            quantity: individualProduct.quantity,
+                        };
+                    }),
+                ],
                 updatedAt: new Date(),
             };
 
-            const cartUpdated = await CartDao.update(
+            const cartUpdated: CartPopulated | null = await CartDao.update(
                 cartIdRequested,
                 cartModeled
             );
@@ -112,7 +132,7 @@ export class CartService {
                     return {
                         ...item,
                         product: ProductDto.single(
-                            item.product as unknown as IProduct
+                            item.product as unknown as ProductFindPopulated
                         ),
                     };
                 }),
@@ -138,7 +158,7 @@ export class CartService {
         userUpdateResponse: UserResponse;
     }> {
         try {
-            const cartFound: ICart | null = await CartDao.getById(
+            const cartFound: CartPopulated | null = await CartDao.getById(
                 cartIdRequested
             );
 
@@ -152,22 +172,12 @@ export class CartService {
             }
 
             for (const item of cartFound.products) {
-                const productFound: IProduct | null = await ProductDao.getById(
-                    item.product._id.toString()
-                );
-
-                if (!productFound) {
+                if (
+                    item.product.stock < item.quantity &&
+                    !item.product.status
+                ) {
                     const error: HttpError = new HttpError(
-                        "Product not found",
-                        "Product not found",
-                        HTTP_STATUS.NOT_FOUND
-                    );
-                    throw error;
-                }
-
-                if (productFound.stock < item.quantity) {
-                    const error: HttpError = new HttpError(
-                        `Not enough stock for product ${productFound.title}`,
+                        `Not enough stock for product ${item.product.title}`,
                         "INSUFFICIENT_STOCK",
                         HTTP_STATUS.BAD_REQUEST
                     );
@@ -181,7 +191,7 @@ export class CartService {
                     return {
                         ...item,
                         product: ProductDto.single(
-                            item.product as unknown as IProduct
+                            item.product as unknown as ProductFindPopulated
                         ),
                     };
                 }),
@@ -204,7 +214,7 @@ export class CartService {
                         ...cartFound,
                         isActive: false,
                         updatedAt: new Date(),
-                    }),
+                    } as unknown as ICart),
                     CartService.createCart(),
                 ]
             );
@@ -235,9 +245,8 @@ export class CartService {
                 UserDto.userDTO(userUpdated);
 
             for (const item of cartFound.products) {
-                const productFound: IProduct | null = await ProductDao.getById(
-                    item.product._id.toString()
-                );
+                const productFound: ProductFindPopulated | null =
+                    await ProductDao.getById(item.product._id.toString());
 
                 if (productFound) {
                     const newStock = productFound.stock - item.quantity;
