@@ -5,6 +5,7 @@ import schemaValidator from "../../middlewares/schemaValidators.middlewares";
 import { uploadFields } from "../../middlewares/uploadFields.middlewares";
 // VALIDATORS
 import {
+    assertRole,
     userCreatePayloadValidator,
     userLoginValidator,
     userUpdattePayloadValidator,
@@ -37,6 +38,13 @@ userRouter.put(
     checkUserRole([UserRole.ADMIN, UserRole.USER, UserRole.SALER]),
     schemaValidator(userUpdattePayloadValidator, idValidator),
     UserController.updateUser
+);
+
+userRouter.put(
+    "/newRole/:id",
+    checkUserRole([UserRole.ADMIN]),
+    schemaValidator(assertRole, idValidator),
+    UserController.assignRole
 );
 
 userRouter.get(

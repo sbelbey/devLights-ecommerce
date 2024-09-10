@@ -41,6 +41,6 @@
 
 ### Requerimientos Usuario Administrador:
 
-13. Administración de Usuarios - Goal: Permitir al admin ver el listado de usuarios
-    -   Editar o asignar roles a los usuarios.
+13. Administración de Usuarios - Goal: Permitir al admin ver el listado de usuarios (LISTO)
+    -   Editar o asignar roles a los usuarios. (LISTO)
 14. Administración de Compras - Goal: Permitir al admin ver el historial de compras por usuario

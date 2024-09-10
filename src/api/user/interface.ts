@@ -51,3 +51,8 @@ export interface UserUpdateFields {
     role?: string;
     avatarUrl?: string;
 }
+
+export interface assignRoleFields {
+    role: string;
+    user: string;
+}

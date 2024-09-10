@@ -41,3 +41,7 @@ export const userUpdattePayloadValidator = z.object({
         .optional(),
     role: z.nativeEnum(UserRole).optional(),
 });
+
+export const assertRole = z.object({
+    role: z.nativeEnum(UserRole),
+});

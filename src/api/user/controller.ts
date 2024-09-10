@@ -2,6 +2,7 @@
 import { Request, Response } from "express";
 // INTERFACES
 import {
+    assignRoleFields,
     UserCreateFields,
     UserLoginFields,
     UserResponse,
@@ -145,6 +146,33 @@ export default class UserController {
                 files
             );
             const response = apiResponse(true, userResponse);
+            return res.status(HTTP_STATUS.OK).json(response);
+        } catch (err: any) {
+            const response = apiResponse(
+                false,
+                new HttpError(
+                    err.description || err.message,
+                    err.details || err.message,
+                    err.status || HTTP_STATUS.SERVER_ERROR
+                )
+            );
+            return res
+                .status(err.status || HTTP_STATUS.SERVER_ERROR)
+                .json(response);
+        }
+    }
+
+    static async assignRole(req: Request, res: Response): Promise<Response> {
+        try {
+            const data: assignRoleFields = req.body;
+            const userToChange: string = req.params.id;
+
+            const userUpdated: UserResponse = await UserService.assignRole(
+                userToChange,
+                data
+            );
+
+            const response = apiResponse(true, userUpdated);
             return res.status(HTTP_STATUS.OK).json(response);
         } catch (err: any) {
             const response = apiResponse(

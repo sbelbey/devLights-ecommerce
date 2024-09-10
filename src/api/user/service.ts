@@ -1,6 +1,7 @@
 // INTERFACES
 import { CartPopulated, ICart } from "../cart/interface";
 import {
+    assignRoleFields,
     IUser,
     UserCreateFields,
     UserLoginFields,
@@ -23,6 +24,7 @@ import UserDto from "./dto";
 // CONSTANTS
 import HTTP_STATUS from "../../constants/HttpStatus";
 import { MulterFiles } from "../../interfaces/file.interface";
+import AuditData from "../../utils/AuditData.utils";
 
 export default class UserService {
     static async createUser(user: UserCreateFields): Promise<UserResponse> {
@@ -205,6 +207,55 @@ export default class UserService {
             const userUpdated: IUser | null = await UserDao.update(
                 userId,
                 userToUpdate
+            );
+
+            if (!userUpdated) {
+                throw new HttpError(
+                    "User not updated",
+                    "USER_NOT_UPDATED",
+                    HTTP_STATUS.SERVER_ERROR
+                );
+            }
+
+            const userCleaned: UserResponse = UserDto.userDTO(userUpdated);
+
+            return userCleaned;
+        } catch (err: any) {
+            const error: HttpError = new HttpError(
+                err.description || err.message,
+                err.details || err.message,
+                err.status || HTTP_STATUS.SERVER_ERROR
+            );
+            throw error;
+        }
+    }
+
+    static async assignRole(
+        userToChange: string,
+        data: assignRoleFields
+    ): Promise<UserResponse> {
+        try {
+            const userFound: IUser | null = await UserDao.getById(userToChange);
+            if (!userFound) {
+                throw new HttpError(
+                    "User not found",
+                    "USER_NOT_FOUND",
+                    HTTP_STATUS.NOT_FOUND
+                );
+            }
+
+            const userToUpdate: IUser = {
+                ...userFound,
+                role: data.role,
+            };
+
+            const userWithAuditData: IUser = AuditData.addUpdateData(
+                data.user,
+                userToUpdate
+            );
+            const userUpdated: IUser | null = await UserDao.update(
+                userToChange,
+                userWithAuditData
             );
 
             if (!userUpdated) {
