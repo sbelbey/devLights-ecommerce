@@ -15,4 +15,10 @@ ticketRouter.get(
     TicketController.getPurchases
 );
 
+ticketRouter.get(
+    "/purchases/saler",
+    checkUserRole([UserRole.SALER]),
+    TicketController.getPurchaseBySaler
+);
+
 export default ticketRouter;

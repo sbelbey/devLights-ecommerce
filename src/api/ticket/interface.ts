@@ -2,7 +2,7 @@
 import { Types } from "mongoose";
 // INTERFACES
 import { IUser } from "../user/interface";
-import { CartResponse, ICart } from "../cart/interface";
+import { CartResponse } from "../cart/interface";
 
 export interface TicketResponse {
     id: string;
@@ -29,4 +29,17 @@ export interface ITicketPopulated {
     buyerId: IUser;
     cartId: CartResponse;
     createdAt: Date;
+}
+
+export interface salesOfASaler {
+    _id: Types.ObjectId;
+    totalTickets: number;
+    totalProducts: number;
+    totalAmount: number;
+    tickets: {
+        _id: Types.ObjectId;
+        totalProducts: number;
+        totalAmount: number;
+        products: Types.ObjectId[];
+    }[];
 }

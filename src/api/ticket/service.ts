@@ -1,6 +1,11 @@
 // INTERFACES
 import { CartResponse } from "../cart/interface";
-import { ITicket, ITicketPopulated, TicketResponse } from "./interface";
+import {
+    ITicket,
+    ITicketPopulated,
+    salesOfASaler,
+    TicketResponse,
+} from "./interface";
 import { IUser } from "../user/interface";
 // DAOS
 import TicketDao from "./dao";
@@ -64,6 +69,31 @@ export default class TicketService {
                 TicketDto.multiple(ticketsFound);
 
             return ticketResponse;
+        } catch (err: any) {
+            const error: HttpError = new HttpError(
+                err.description || err.message,
+                err.details || err.message,
+                err.status || HTTP_STATUS.SERVER_ERROR
+            );
+
+            throw error;
+        }
+    }
+
+    static async findPurchaseBySaler(user: string): Promise<salesOfASaler> {
+        try {
+            const ticketsFound: salesOfASaler =
+                await TicketRepository.findTicketsBySellerId(user);
+
+            if (!ticketsFound || ticketsFound.totalTickets === 0) {
+                throw new HttpError(
+                    "No tickets found",
+                    "There were no tickets found user requested",
+                    HTTP_STATUS.NOT_FOUND
+                );
+            }
+
+            return ticketsFound;
         } catch (err: any) {
             const error: HttpError = new HttpError(
                 err.description || err.message,

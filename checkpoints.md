@@ -37,7 +37,7 @@
     -   Carga de Productos - Goal: Permitir al vendedor añadir nuevos productos (LISTO)
     -   Edición de Productos - Goal: Permitir al vendedor modificar la información de los productos (LISTO)
     -   Eliminación de Productos - Goal: Permitir al vendedor eliminar productos(LISTO)
-    -   Listado de Ventas
+    -   Listado de Ventas(LISTO)
 
 ### Requerimientos Usuario Administrador:
 
