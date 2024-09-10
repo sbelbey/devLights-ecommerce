@@ -1,7 +1,7 @@
 // LIBRARIES
 import { Request, Response } from "express";
 // INTERFACES
-import { salesOfASaler, TicketResponse } from "./interface";
+import { ITicketPopulated, salesOfASaler, TicketResponse } from "./interface";
 // SERVICES
 import TicketService from "./service";
 // UTILS
@@ -62,6 +62,40 @@ export default class TicketController {
             }
 
             const response = apiResponse(true, sales);
+            return res.status(HTTP_STATUS.OK).json(response);
+        } catch (err: any) {
+            const response = apiResponse(
+                false,
+                new HttpError(
+                    err.description || err.message,
+                    err.details || err.message,
+                    err.status || HTTP_STATUS.SERVER_ERROR
+                )
+            );
+            return res
+                .status(err.status || HTTP_STATUS.SERVER_ERROR)
+                .json(response);
+        }
+    }
+
+    static async getAllPurchaseByUser(
+        req: Request,
+        res: Response
+    ): Promise<Response> {
+        try {
+            const { id } = req.params;
+
+            const userPurchases: TicketResponse[] =
+                await TicketService.findUserPurchases(id);
+
+            if (!userPurchases) {
+                throw new HttpError(
+                    "No purchases found",
+                    "There were no purchases found",
+                    HTTP_STATUS.NOT_FOUND
+                );
+            }
+            const response = apiResponse(true, userPurchases);
             return res.status(HTTP_STATUS.OK).json(response);
         } catch (err: any) {
             const response = apiResponse(

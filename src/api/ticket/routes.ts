@@ -21,4 +21,10 @@ ticketRouter.get(
     TicketController.getPurchaseBySaler
 );
 
+ticketRouter.get(
+    "/purchases/user/:id",
+    checkUserRole([UserRole.ADMIN]),
+    TicketController.getAllPurchaseByUser
+);
+
 export default ticketRouter;
