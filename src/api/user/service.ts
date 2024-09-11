@@ -172,7 +172,7 @@ export default class UserService {
                 throw new HttpError(
                     "Invalid credentials",
                     "Invalid credentials",
-                    HTTP_STATUS.FORBIDDEN
+                    HTTP_STATUS.UNAUTHORIZED
                 );
             }
 
@@ -185,7 +185,7 @@ export default class UserService {
                 throw new HttpError(
                     "Invalid credentials",
                     "Invalid credentials",
-                    HTTP_STATUS.FORBIDDEN
+                    HTTP_STATUS.UNAUTHORIZED
                 );
             }
 

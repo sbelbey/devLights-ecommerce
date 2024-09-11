@@ -1,8 +1,11 @@
+// LIBRARIES
 import { expect } from "@jest/globals";
 import { describe, it, beforeEach, afterEach } from "@jest/globals";
 import sinon from "sinon";
 import mongoose from "mongoose";
+// MANAGERS
 import MongoManager from "../../src/db/mongoManager";
+// CONFIGS
 import DB_CONFIG from "../../src/config/db.config";
 
 describe("MongoManager", () => {
@@ -20,13 +23,13 @@ describe("MongoManager", () => {
         sinon.restore();
     });
 
-    it("debería crear una única instancia (Singleton)", () => {
+    it("Should create a sigle instance (Singleton)", () => {
         const instance1 = MongoManager.connect();
         const instance2 = MongoManager.connect();
         expect(instance1).toEqual(instance2);
     });
 
-    it("debería lanzar un error si la URI de MongoDB no está definida", () => {
+    it("Should throw an error if Mongo URI is not defined", () => {
         const originalUri = DB_CONFIG.mongo.uri;
         DB_CONFIG.mongo.uri = null;
 
@@ -37,7 +40,7 @@ describe("MongoManager", () => {
         DB_CONFIG.mongo.uri = originalUri;
     });
 
-    it("debería intentar conectarse a MongoDB", () => {
+    it("Should try connect to MongoDB", () => {
         MongoManager.connect();
         expect(connectStub.calledOnce).toBe(true);
         expect(connectStub.calledWith(DB_CONFIG.mongo.uri)).toBe(true);

@@ -1,18 +1,20 @@
+// LIBRARIES
 import { jest, expect } from "@jest/globals";
+import bcrypt from "bcrypt";
+// INTERFACES
+import { IUser } from "../../src/api/user/interface";
+// UTILS
 import { BcryptUtils } from "../../src/utils/bcrypt.utils";
-import { User } from "../../src/api/user/model";
-import bcrypt from "bcrypt"; // Import bcrypt as a module
 
 jest.mock("bcrypt");
 
 describe("BcryptUtils", () => {
-    describe("createHash", () => {
-        it("should create a hash for the given password", () => {
+    describe("Should create a hash", () => {
+        it("Should create a hash for the given password", () => {
             const password = "testPassword";
             const salt = "testSalt";
             const hash = "testHash";
 
-            // Cast bcrypt functions to jest.Mock
             (bcrypt.genSaltSync as jest.Mock).mockReturnValue(salt);
             (bcrypt.hashSync as jest.Mock).mockReturnValue(hash);
 
@@ -25,9 +27,9 @@ describe("BcryptUtils", () => {
     });
 
     describe("isValidPassword", () => {
-        it("should return true if the password is valid", () => {
+        it("Should return true if the password is valid", () => {
             const password = "testPassword";
-            const user: User = { password: "hashedPassword" } as User;
+            const user: IUser = { password: "hashedPassword" } as IUser;
 
             // Cast bcrypt function to jest.Mock
             (bcrypt.compareSync as jest.Mock).mockReturnValue(true);
@@ -41,9 +43,9 @@ describe("BcryptUtils", () => {
             expect(result).toBe(true);
         });
 
-        it("should return false if the password is invalid", () => {
+        it("Should return false if the password is invalid", () => {
             const password = "testPassword";
-            const user: User = { password: "hashedPassword" } as User;
+            const user: IUser = { password: "hashedPassword" } as IUser;
 
             // Cast bcrypt function to jest.Mock
             (bcrypt.compareSync as jest.Mock).mockReturnValue(false);
