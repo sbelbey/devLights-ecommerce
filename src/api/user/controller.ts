@@ -73,8 +73,7 @@ export default class UserController {
         try {
             const userId: string = req.params.id;
 
-            let user: UserResponse = await UserService.getUserById(userId);
-
+            const user: UserResponse = await UserService.getUserById(userId);
             const response = apiResponse(true, user);
             return res.status(HTTP_STATUS.OK).json(response);
         } catch (err: any) {
@@ -101,10 +100,21 @@ export default class UserController {
      */
     static async getAllUsers(req: Request, res: Response): Promise<Response> {
         try {
-            const users: UserResponse[] = await UserService.getAllUsers();
+            const email: string = req.query.email as string;
 
-            const response = apiResponse(true, users);
-            return res.status(HTTP_STATUS.OK).json(response);
+            if (email) {
+                const user: UserResponse = await UserService.getUserByEmail(
+                    email,
+                    req.body.user
+                );
+                const response = apiResponse(true, user);
+                return res.status(HTTP_STATUS.OK).json(response);
+            } else {
+                const users: UserResponse[] = await UserService.getAllUsers();
+
+                const response = apiResponse(true, users);
+                return res.status(HTTP_STATUS.OK).json(response);
+            }
         } catch (err: any) {
             const response = apiResponse(
                 false,

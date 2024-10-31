@@ -86,7 +86,7 @@ userRouter.get(
  */
 userRouter.get(
     "/",
-    checkUserRole([UserRole.ADMIN]),
+    checkUserRole([UserRole.ADMIN, UserRole.USER, UserRole.SALER]),
     UserController.getAllUsers
 );
 

@@ -21,7 +21,7 @@ export default class MiddlewareConfig {
     static config(app: express.Application): void {
         app.use(
             cors({
-                origin: "http://localhost:8080",
+                origin: "http://localhost:3000",
                 methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
                 preflightContinue: false,
                 optionsSuccessStatus: 204,

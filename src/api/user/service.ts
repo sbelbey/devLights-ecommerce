@@ -121,6 +121,32 @@ export default class UserService {
         }
     }
 
+    static async getUserByEmail(
+        email: string,
+        userID: string
+    ): Promise<UserResponse> {
+        try {
+            const userFound: IUser | null = await UserDao.getByEmail(email);
+
+            if (!userFound || userFound._id.toString() === userID) {
+                throw new HttpError(
+                    "User not found",
+                    "USER_NOT_FOUND",
+                    HTTP_STATUS.NOT_FOUND
+                );
+            }
+            const userCleaned: UserResponse = UserDto.userDTO(userFound);
+            return userCleaned;
+        } catch (err: any) {
+            const error: HttpError = new HttpError(
+                err.description || err.message,
+                err.details || err.message,
+                err.status || HTTP_STATUS.SERVER_ERROR
+            );
+            throw error;
+        }
+    }
+
     /**
      * Retrieves all users from the database.
      *

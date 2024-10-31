@@ -33,6 +33,10 @@ class UserDao {
         return await UserModel.findById(id).lean();
     }
 
+    static async getByEmail(email: string): Promise<IUser | null> {
+        return await UserModel.findOne({ email }).lean();
+    }
+
     /**
      * Updates an existing user in the database.
      * @param id - The unique identifier of the user to update.
